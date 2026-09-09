@@ -1,0 +1,383 @@
+.register-page {
+  min-height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    radial-gradient(circle at 10% 20%, #ffd3e4, transparent 25%),
+    radial-gradient(circle at 90% 80%, #ffe2b8, transparent 25%),
+    linear-gradient(135deg,#fff7fb,#ffedf4);
+
+  position: relative;
+
+  overflow: hidden;
+}
+
+
+.register-box {
+
+  width: 450px;
+
+  padding: 40px;
+
+  background: rgba(255,255,255,0.94);
+
+  border-radius: 30px;
+
+  box-shadow:
+    0 25px 60px rgba(0,0,0,0.12);
+
+  text-align: center;
+
+  animation: registerAppear 0.8s ease;
+}
+
+
+.register-shake {
+  animation: registerShake 0.4s ease;
+}
+
+
+.register-icon {
+
+  width: 75px;
+  height: 75px;
+
+  margin: auto;
+
+  border-radius: 50%;
+
+  background: #ffe0ec;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  font-size: 40px;
+
+  animation: registerIcon 2s infinite;
+}
+
+
+.register-box h1 {
+
+  margin-top: 18px;
+
+  font-size: 30px;
+
+}
+
+
+.register-subtitle {
+
+  color: #806c75;
+
+  margin: 8px 0 25px;
+
+}
+
+
+/* INPUT */
+
+.register-input {
+
+  text-align: left;
+
+  margin-bottom: 15px;
+
+}
+
+
+.register-input label {
+
+  display: block;
+
+  font-weight: bold;
+
+  margin-bottom: 6px;
+
+}
+
+
+.register-input input {
+
+  width: 100%;
+
+  padding: 13px 15px;
+
+  border: 2px solid #f1d5df;
+
+  border-radius: 12px;
+
+  outline: none;
+
+  font-size: 14px;
+
+  transition: 0.3s;
+
+}
+
+
+.register-input input:focus {
+
+  border-color: #e84d8a;
+
+  box-shadow:
+    0 0 0 4px rgba(232,77,138,0.1);
+
+}
+
+
+/* ERROR */
+
+.register-error {
+
+  background: #ffe5e8;
+
+  color: #c62828;
+
+  padding: 10px;
+
+  border-radius: 10px;
+
+  margin-bottom: 15px;
+
+  font-size: 14px;
+
+  animation: errorAnimation 0.3s ease;
+
+}
+
+
+/* BUTTON */
+
+.register-submit {
+
+  width: 100%;
+
+  padding: 14px;
+
+  border: none;
+
+  border-radius: 25px;
+
+  background: #e84d8a;
+
+  color: white;
+
+  font-size: 16px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+
+}
+
+
+.register-submit:hover {
+
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 10px 25px rgba(232,77,138,0.3);
+
+}
+
+
+/* LINKS */
+
+.already-account {
+
+  margin-top: 20px;
+
+  color: #806c75;
+
+}
+
+
+.login-link {
+
+  border: none;
+
+  background: none;
+
+  color: #e84d8a;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+}
+
+
+.register-home {
+
+  display: block;
+
+  margin: 20px auto 0;
+
+  border: none;
+
+  background: none;
+
+  color: #806c75;
+
+  cursor: pointer;
+
+}
+
+
+/* DECORATION */
+
+.register-decoration {
+
+  position: absolute;
+
+  right: 10%;
+
+  top: 15%;
+
+  font-size: 80px;
+
+  animation: decorationAnimation 4s infinite;
+
+}
+
+
+/* ANIMATIONS */
+
+@keyframes registerAppear {
+
+  from {
+
+    opacity: 0;
+
+    transform:
+      translateY(60px)
+      scale(0.9);
+
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform:
+      translateY(0)
+      scale(1);
+
+  }
+
+}
+
+
+@keyframes registerShake {
+
+  0%,100% {
+
+    transform: translateX(0);
+
+  }
+
+  25% {
+
+    transform: translateX(-10px);
+
+  }
+
+  50% {
+
+    transform: translateX(10px);
+
+  }
+
+  75% {
+
+    transform: translateX(-10px);
+
+  }
+
+}
+
+
+@keyframes registerIcon {
+
+  0%,100% {
+
+    transform: translateY(0);
+
+  }
+
+  50% {
+
+    transform: translateY(-10px);
+
+  }
+
+}
+
+
+@keyframes errorAnimation {
+
+  from {
+
+    opacity: 0;
+
+    transform: scale(0.9);
+
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform: scale(1);
+
+  }
+
+}
+
+
+@keyframes decorationAnimation {
+
+  0%,100% {
+
+    transform:
+      translateY(0)
+      rotate(0);
+
+  }
+
+  50% {
+
+    transform:
+      translateY(-30px)
+      rotate(12deg);
+
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .register-box {
+
+    width: 90%;
+
+    padding: 30px 20px;
+
+  }
+
+  .register-decoration {
+
+    display: none;
+
+  }
+
+}
