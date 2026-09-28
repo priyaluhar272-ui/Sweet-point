@@ -1,0 +1,504 @@
+@import url("https://fonts.googleapis.com/css2?family=Pacifico&display=swap");
+@import url("https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css");
+
+
+* {
+  box-sizing: border-box;
+}
+
+
+body {
+  margin: 0;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+}
+
+
+/* =========================================
+   MAIN PAGE
+========================================= */
+
+.signup-page {
+  min-height: 100vh;
+
+  background: #f9fafb;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 30px 20px;
+}
+
+
+.signup-container {
+  width: 100%;
+
+  max-width: 1000px;
+
+  padding: 25px 0;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.signup-header {
+  text-align: center;
+  font-size: x-large;
+  margin-bottom: 32px;
+}
+
+
+.brand-name {
+  font-family: "Pacifico", cursive;
+
+  color: #e94b89;
+
+  font-size: 40px;
+
+  font-weight: normal;
+
+  margin: 0 0 8px;
+}
+
+
+.signup-header h2 {
+  font-size: 24px;
+
+  font-weight: 600;
+
+  color: #1f2937;
+
+  margin: 0;
+}
+
+
+.title-line {
+  width: 100px;
+
+  height: 4px;
+
+  background: #e94b89;
+
+  margin: 13px auto 0;
+
+  border-radius: 999px;
+}
+
+
+/* =========================================
+   CARD
+========================================= */
+
+.signup-card {
+  background: white;
+
+  border-radius: 10px;
+
+  padding: 42px 48px;
+
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+
+/* =========================================
+   MESSAGE
+========================================= */
+
+.message {
+  text-align: center;
+
+  color: #dc2626;
+
+  margin-bottom: 20px;
+
+  font-size: 15px;
+
+  font-weight: 500;
+}
+
+
+/* =========================================
+   TWO COLUMN LAYOUT
+========================================= */
+
+.two-column {
+  display: grid;
+
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 24px;
+}
+
+
+/* =========================================
+   FORM GROUP
+========================================= */
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+
+.form-group label {
+  display: block;
+
+  font-size: 16px;
+
+  font-weight: 600;
+
+  color: #374151;
+
+  margin-bottom: 9px;
+}
+
+
+.required {
+  color: #ef4444;
+
+  margin-left: 4px;
+}
+
+
+/* =========================================
+   INPUT WRAPPER
+========================================= */
+
+.input-wrapper {
+  position: relative;
+
+  width: 100%;
+}
+
+
+.input-wrapper > i:first-child {
+  position: absolute;
+
+  left: 15px;
+
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  color: #9ca3af;
+
+  font-size: 19px;
+
+  z-index: 2;
+
+  pointer-events: none;
+}
+
+
+/* =========================================
+   INPUT + SELECT
+========================================= */
+
+.input-wrapper input,
+.input-wrapper select {
+  width: 100%;
+
+  height: 52px;
+
+  padding: 0 45px;
+
+  border: 1px solid #d1d5db;
+
+  border-radius: 8px;
+
+  color: #374151;
+
+  background: white;
+
+  font-size: 15px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+
+.input-wrapper input::placeholder {
+  color: #9ca3af;
+
+  font-size: 15px;
+}
+
+
+.input-wrapper input:focus,
+.input-wrapper select:focus {
+  border-color: #fea116;
+
+  box-shadow:
+    0 0 0 3px rgba(254, 161, 22, 0.12);
+}
+
+
+/* =========================================
+   SELECT
+========================================= */
+
+.input-wrapper select {
+  cursor: pointer;
+
+  appearance: auto;
+}
+
+
+/* =========================================
+   PASSWORD EYE
+========================================= */
+
+.password-eye {
+  position: absolute;
+
+  right: 15px;
+
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  color: #9ca3af;
+
+  cursor: pointer;
+
+  font-size: 19px;
+
+  z-index: 3;
+}
+
+
+.password-eye:hover {
+  color: #ca0076;
+}
+
+
+/* =========================================
+   PASSWORD HELP
+========================================= */
+
+.password-help {
+  margin: 6px 0 0;
+
+  font-size: 13px;
+
+  color: #6b7280;
+}
+
+
+/* =========================================
+   TERMS
+========================================= */
+
+.terms-section {
+  margin-top: 4px;
+
+  margin-bottom: 26px;
+}
+
+
+.terms-section label {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  font-size: 15px;
+
+  color: #374151;
+
+  cursor: pointer;
+}
+
+
+.terms-section input {
+  width: 19px;
+
+  height: 19px;
+
+  accent-color: #fea116;
+
+  cursor: pointer;
+}
+
+
+.terms-section a {
+  color: #e94b89;
+
+  text-decoration: none;
+
+  font-weight: 500;
+}
+
+
+.terms-section a:hover {
+  text-decoration: underline;
+}
+
+
+/* =========================================
+   CREATE ACCOUNT BUTTON
+========================================= */
+
+.create-account-button {
+  width: 100%;
+
+  height: 53px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: #e94b89;
+
+  color: white;
+
+  font-size: 16px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s,
+    transform 0.1s;
+}
+
+
+.create-account-button:hover {
+  background: #ca0076;
+}
+
+
+.create-account-button:active {
+  transform: scale(0.99);
+}
+
+
+/* =========================================
+   LOGIN
+========================================= */
+
+.login-section {
+  text-align: center;
+
+  margin-top: 25px;
+
+  font-size: 15px;
+
+  color: #374151;
+}
+
+
+.login-section p {
+  margin: 0;
+}
+
+
+.login-section a {
+  color: #e94b89;
+
+  text-decoration: none;
+
+  font-weight: 800;
+}
+
+
+.login-section a:hover {
+  color: #ca0076;
+}
+
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.footer {
+  text-align: center;
+
+  margin-top: 24px;
+
+  color: #4b5563;
+
+  font-size: 14px;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+
+  .signup-page {
+    padding: 20px 12px;
+  }
+
+
+  .signup-container {
+    max-width: 100%;
+  }
+
+
+  .signup-card {
+    padding: 30px 22px;
+  }
+
+
+  .two-column {
+    grid-template-columns: 1fr;
+
+    gap: 0;
+  }
+
+
+  .brand-name {
+    font-size: 36px;
+  }
+
+
+  .signup-header h2 {
+    font-size: 21px;
+  }
+
+}
+
+
+@media (max-width: 480px) {
+
+  .signup-card {
+    padding: 25px 18px;
+  }
+
+
+  .form-group label {
+    font-size: 15px;
+  }
+
+
+  .input-wrapper input,
+  .input-wrapper select {
+    height: 50px;
+
+    font-size: 14px;
+  }
+
+
+  .terms-section label {
+    align-items: flex-start;
+
+    line-height: 1.5;
+  }
+
+}

@@ -1,0 +1,591 @@
+/* =========================
+   DASHBOARD
+========================= */
+
+.dashboard {
+  min-height: 100vh;
+  background: #f3f4f6;
+  font-family: Arial, sans-serif;
+  color: #1f2937;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.dashboard-header {
+  height: 72px;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icon {
+  width: 42px;
+  height: 42px;
+  background: #e94b89;
+  color: white;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 23px;
+}
+
+.dashboard-logo {
+  margin: 0;
+  font-size: 25px;
+  font-weight: 700;
+  color: #e94b89;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+/* =========================
+   NOTIFICATION
+========================= */
+
+.notification-container {
+  position: relative;
+}
+
+.notification-button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 23px;
+  color: #4b5563;
+  padding: 6px;
+}
+
+.notification-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #ef4444;
+  border-radius: 50%;
+  top: 5px;
+  right: 5px;
+}
+
+/* =========================
+   STATUS
+========================= */
+
+.status-container {
+  position: relative;
+}
+
+.status-button {
+  border: 1px solid #e5e7eb;
+  background: white;
+  padding: 9px 13px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.status-dot,
+.green-dot,
+.gray-dot,
+.red-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-dot {
+  background: #22c55e;
+}
+
+.active-status .status-dot {
+  background: #22c55e;
+}
+
+.offline-status .status-dot {
+  background: #9ca3af;
+}
+
+.inactive-status .status-dot {
+  background: #ef4444;
+}
+
+.status-menu {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  width: 145px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  padding: 6px;
+  z-index: 20;
+}
+
+.status-menu button {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  border-radius: 6px;
+  text-align: left;
+}
+
+.status-menu button:hover {
+  background: #f3f4f6;
+}
+
+.green-dot {
+  background: #22c55e;
+}
+
+.gray-dot {
+  background: #9ca3af;
+}
+
+.red-dot {
+  background: #ef4444;
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+.profile-container {
+  position: relative;
+}
+
+.profile-toggle {
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.profile-icon {
+  width: 36px;
+  height: 36px;
+  background: #f3f4f6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4b5563;
+  font-size: 18px;
+}
+
+.profile-menu {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  width: 180px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  padding: 6px;
+  z-index: 20;
+}
+
+.profile-menu a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  text-decoration: none;
+  color: #374151;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.profile-menu a:hover {
+  background: #f3f4f6;
+}
+
+.menu-divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 5px 0;
+}
+
+.logout-link {
+  color: #dc2626 !important;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+.dashboard-main {
+  padding: 32px;
+}
+
+.dashboard-content {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.dashboard-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.dashboard-top h2 {
+  margin: 0;
+  font-size: 27px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.dashboard-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* =========================
+   SEARCH
+========================= */
+
+.search-box {
+  width: 260px;
+  height: 42px;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+}
+
+.search-box i {
+  color: #6b7280;
+  font-size: 18px;
+}
+
+.search-box input {
+  width: 100%;
+  border: none;
+  outline: none;
+  margin-left: 9px;
+  font-size: 14px;
+  background: transparent;
+}
+
+/* =========================
+   FILTER BUTTON
+========================= */
+
+.filter-button {
+  height: 42px;
+  padding: 0 16px;
+  border: 1px solid #d1d5db;
+  background: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.filter-button:hover {
+  background: #f9fafb;
+}
+
+/* =========================
+   SUMMARY CARDS
+========================= */
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 25px;
+}
+
+.summary-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 105px;
+}
+
+.summary-card p {
+  margin: 0 0 8px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.summary-card h3 {
+  margin: 0;
+  font-size: 28px;
+  color: #111827;
+}
+
+.summary-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 23px;
+}
+
+.today-icon {
+  background: #fff3df;
+  color: #fea116;
+}
+
+.delivery-icon {
+  background: #eaf2ff;
+  color: #3b82f6;
+}
+
+.delivered-icon {
+  background: #eaf8ef;
+  color: #22c55e;
+}
+
+.cancelled-icon {
+  background: #feecec;
+  color: #ef4444;
+}
+
+/* =========================
+   ORDERS TABLE
+========================= */
+
+.orders-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1050px;
+}
+
+thead {
+  background: #f9fafb;
+}
+
+th {
+  padding: 15px 16px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4b5563;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+td {
+  padding: 16px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+  color: #374151;
+}
+
+tbody tr:hover {
+  background: #fafafa;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* =========================
+   CHECKBOX
+========================= */
+
+.custom-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: #fea116;
+  cursor: pointer;
+}
+
+/* =========================
+   ORDER ID
+========================= */
+
+.order-id {
+  color: #ca0076;
+  font-weight: 600;
+}
+
+/* =========================
+   CUSTOMER
+========================= */
+
+.customer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.customer-icon {
+  width: 38px;
+  height: 38px;
+  background: #fff3df;
+  color: #fea116;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.customer-name {
+  margin: 0 0 3px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.customer-phone {
+  margin: 0;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* =========================
+   ORDER STATUS
+========================= */
+
+.order-status {
+  display: inline-flex;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-delivered {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-preparing {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.status-out {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.status-cancelled {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+/* =========================
+   UPDATE STATUS
+========================= */
+
+.update-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #ca0076;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.update-status:hover {
+  color: #e58f00;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1100px) {
+  .summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+  }
+}
+
+@media (max-width: 700px) {
+  .dashboard-header {
+    padding: 0 15px;
+  }
+
+  .dashboard-main {
+    padding: 20px 15px;
+  }
+
+  .dashboard-logo {
+    font-size: 20px;
+  }
+
+  .profile-name {
+    display: none;
+  }
+
+  .header-right {
+    gap: 10px;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-actions {
+    width: 100%;
+  }
+
+  .search-box {
+    flex: 1;
+    width: auto;
+  }
+}
