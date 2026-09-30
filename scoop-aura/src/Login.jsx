@@ -52,7 +52,7 @@ function Login() {
 
     alert("Login Successful! 🍦");
 
-    navigate("/dashboard");
+    navigate("/flavormenu");
   };
 
 
@@ -124,13 +124,12 @@ function Login() {
             </div>
           )}
 
-
           <button
-            type="submit"
+              type="submit"
             className="login-submit"
-          >
-            Login 🍨
-          </button>
+              >
+              Login 🍨
+             </button>
 
         </form>
 
@@ -153,6 +152,7 @@ function Login() {
         >
           ← Back to Home
         </button>
+        
 
       </div>
 

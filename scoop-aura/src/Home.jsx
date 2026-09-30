@@ -5,7 +5,10 @@ import "./Home.css";
 function Home() {
   const navigate = useNavigate();
 
-  // Slider data
+  // =========================================
+  // SLIDER DATA
+  // =========================================
+
   const slides = [
     {
       title: "Chocolate",
@@ -54,7 +57,10 @@ function Home() {
 
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Automatic slider
+  // =========================================
+  // AUTOMATIC SLIDER
+  // =========================================
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((previous) => {
@@ -65,14 +71,20 @@ function Home() {
     return () => clearInterval(timer);
   }, [slides.length]);
 
-  // Next
+  // =========================================
+  // NEXT SLIDE
+  // =========================================
+
   const nextSlide = () => {
     setCurrentSlide((previous) => {
       return (previous + 1) % slides.length;
     });
   };
 
-  // Previous
+  // =========================================
+  // PREVIOUS SLIDE
+  // =========================================
+
   const previousSlide = () => {
     setCurrentSlide((previous) => {
       return previous === 0
@@ -81,7 +93,10 @@ function Home() {
     });
   };
 
-  // Explore button
+  // =========================================
+  // EXPLORE BUTTON
+  // =========================================
+
   const exploreFlavors = () => {
     document
       .getElementById("flavors")
@@ -90,10 +105,24 @@ function Home() {
       });
   };
 
+  // =========================================
+  // OPEN FLAVOR MENU
+  // =========================================
+
+  const openFlavorMenu = (flavorName) => {
+    navigate("/flavor-menu", {
+      state: {
+        flavor: flavorName,
+      },
+    });
+  };
+
   return (
     <div className="home-page">
 
-      {/* ================= NAVBAR ================= */}
+      {/* =====================================
+          NAVBAR
+      ===================================== */}
 
       <nav className="navbar">
 
@@ -135,7 +164,9 @@ function Home() {
       </nav>
 
 
-      {/* ================= HERO SLIDER ================= */}
+      {/* =====================================
+          HERO SLIDER
+      ===================================== */}
 
       <section
         className="hero"
@@ -279,7 +310,9 @@ function Home() {
       </section>
 
 
-      {/* ================= FEATURES ================= */}
+      {/* =====================================
+          FEATURES
+      ===================================== */}
 
       <section className="features">
 
@@ -289,7 +322,9 @@ function Home() {
             🍨
           </div>
 
-          <h3>Fresh Ice Cream</h3>
+          <h3>
+            Fresh Ice Cream
+          </h3>
 
           <p>
             Freshly prepared every day.
@@ -304,7 +339,9 @@ function Home() {
             ⭐
           </div>
 
-          <h3>Premium Quality</h3>
+          <h3>
+            Premium Quality
+          </h3>
 
           <p>
             Made with quality ingredients.
@@ -319,7 +356,9 @@ function Home() {
             ❤️
           </div>
 
-          <h3>Made With Love</h3>
+          <h3>
+            Made With Love
+          </h3>
 
           <p>
             Happiness in every scoop.
@@ -334,7 +373,9 @@ function Home() {
             🚀
           </div>
 
-          <h3>Quick Service</h3>
+          <h3>
+            Quick Service
+          </h3>
 
           <p>
             Fast and easy ordering.
@@ -345,7 +386,9 @@ function Home() {
       </section>
 
 
-      {/* ================= FLAVORS ================= */}
+      {/* =====================================
+          FLAVORS
+      ===================================== */}
 
       <section
         className="flavors"
@@ -354,7 +397,9 @@ function Home() {
 
         <div className="section-heading">
 
-          <p>OUR SPECIALS</p>
+          <p>
+            OUR SPECIALS
+          </p>
 
           <h2>
             Popular Flavors 🍦
@@ -369,7 +414,17 @@ function Home() {
 
         <div className="flavor-container">
 
-          <div className="flavor-card">
+
+          {/* =================================
+              CHOCOLATE
+          ================================= */}
+
+          <div
+            className="flavor-card"
+            onClick={() =>
+              openFlavorMenu("Chocolate Bliss")
+            }
+          >
 
             <div className="flavor-image">
               🍫
@@ -384,11 +439,17 @@ function Home() {
             </p>
 
             <strong>
-              ₹120
+          
             </strong>
 
             <button
-              onClick={() => navigate("/register")}
+              onClick={(event) => {
+                event.stopPropagation();
+
+                openFlavorMenu(
+                  "Chocolate Bliss"
+                );
+              }}
             >
               Try Now
             </button>
@@ -396,7 +457,16 @@ function Home() {
           </div>
 
 
-          <div className="flavor-card">
+          {/* =================================
+              STRAWBERRY
+          ================================= */}
+
+          <div
+            className="flavor-card"
+            onClick={() =>
+              openFlavorMenu("Strawberry Dream")
+            }
+          >
 
             <div className="flavor-image">
               🍓
@@ -411,11 +481,17 @@ function Home() {
             </p>
 
             <strong>
-              ₹110
+          
             </strong>
 
             <button
-              onClick={() => navigate("/register")}
+              onClick={(event) => {
+                event.stopPropagation();
+
+                openFlavorMenu(
+                  "Strawberry Dream"
+                );
+              }}
             >
               Try Now
             </button>
@@ -423,7 +499,16 @@ function Home() {
           </div>
 
 
-          <div className="flavor-card">
+          {/* =================================
+              MANGO
+          ================================= */}
+
+          <div
+            className="flavor-card"
+            onClick={() =>
+              openFlavorMenu("Mango Magic")
+            }
+          >
 
             <div className="flavor-image">
               🥭
@@ -438,23 +523,32 @@ function Home() {
             </p>
 
             <strong>
-              ₹115
+            
             </strong>
 
             <button
-              onClick={() => navigate("/register")}
+              onClick={(event) => {
+                event.stopPropagation();
+
+                openFlavorMenu(
+                  "Mango Magic"
+                );
+              }}
             >
               Try Now
             </button>
 
           </div>
 
+
         </div>
 
       </section>
 
 
-      {/* ================= ABOUT ================= */}
+      {/* =====================================
+          ABOUT
+      ===================================== */}
 
       <section
         className="about"
@@ -499,7 +593,9 @@ function Home() {
       </section>
 
 
-      {/* ================= FOOTER ================= */}
+      {/* =====================================
+          FOOTER
+      ===================================== */}
 
       <footer id="contact">
 
