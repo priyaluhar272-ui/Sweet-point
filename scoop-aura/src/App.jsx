@@ -6,6 +6,7 @@ import Register from "./Register";
 import DeliveryAgentSignup from "./DeliveryAgent/DeliveryAgentSignup";
 import DeliveryAgentLogin from "./DeliveryAgent/DeliveryAgentLogin";
 import DeliveryAgentDashboard from "./DeliveryAgent/DeliveryAgentDashboard";
+import ForgotPassword from "./ForgotPassword";
 
 
 function App() {
@@ -41,7 +42,12 @@ function App() {
           path="/DeliveryAgent/DeliveryAgentDashboard"
           element={<DeliveryAgentDashboard />}
         />
+        <Route
+          path="/forgot-password"
+          element={<ForgotPassword />}
+        />
       </Routes>
+      
 
     </BrowserRouter>
   );

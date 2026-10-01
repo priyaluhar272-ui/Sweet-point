@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from sqlalchemy import text
 from database import engine
 import bcrypt
+from ForgotPassword import router as forgot_password_router
 
 
 app = FastAPI()
@@ -22,6 +23,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(forgot_password_router)
 
 @app.get("/")
 def root():
@@ -121,7 +123,10 @@ def register_user(user: RegisterRequest):
         )
 
 
-    return {
+    return 
+    {
         "success": True,
         "message": "Registration successful."
     }
+
+

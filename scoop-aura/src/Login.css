@@ -106,7 +106,30 @@
     0 0 0 4px rgba(232,77,138,0.1);
 }
 
+.forgot-password {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 16px;
+}
 
+.forgot-password span {
+  color: #806c75;
+}
+
+.forgot-password button {
+  margin-left: 5px;
+  background: none;
+  border: none;
+  padding: 0;
+  color: #e84d8a;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.forgot-password button:hover {
+  text-decoration: underline;
+}
 /* ERROR */
 
 .error-message {
