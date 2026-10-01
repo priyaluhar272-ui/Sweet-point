@@ -1,0 +1,467 @@
+
+* {
+  box-sizing: border-box;
+}
+
+.flavor-section {
+  min-height: 100vh;
+  padding: 45px 25px 20px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 10% 15%, #ffe0ed 0, transparent 30%),
+    radial-gradient(circle at 90% 80%, #ffe8dc 0, transparent 28%),
+    #fff8fb;
+  font-family: Arial, sans-serif;
+  color: #452238;
+}
+
+.flavor-intro {
+  text-align: center;
+  margin: 0 auto 38px;
+  animation: introAppear 0.8s ease both;
+}
+
+.love-text {
+  color: #df2870;
+  font-size: 13px;
+  letter-spacing: 5px;
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+
+.love-text span {
+  font-size: 20px;
+  display: inline-block;
+  margin-left: 5px;
+  animation: heartbeat 1.2s infinite;
+}
+
+.flavor-intro h2 {
+  font-size: clamp(32px, 4vw, 55px);
+  line-height: 1.15;
+  margin: 0;
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+.flavor-intro h2 span {
+  color: #e52c75;
+}
+
+.flavor-intro p {
+  color: #987f90;
+  font-size: 17px;
+  margin-top: 15px;
+}
+
+.intro-decoration {
+  margin-top: 18px;
+  font-size: 23px;
+  animation: floating 2s ease-in-out infinite;
+}
+
+.intro-decoration span {
+  color: #f06b9f;
+}
+
+/* Carousel container */
+.flavor-carousel {
+  position: relative;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 8px 45px;
+}
+
+.flavor-grid {
+  display: flex;
+  align-items: stretch;
+  gap: 26px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding: 8px 2px 25px;
+}
+
+.flavor-grid::-webkit-scrollbar {
+  display: none;
+}
+
+/* Cards */
+.flavor-card {
+  --flavor-bg: #f3dfd2;
+
+  flex: 0 0 calc((100% - 78px) / 4);
+  min-width: 0;
+  min-height: 455px;
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #f6dce8;
+  border-radius: 27px;
+  text-align: center;
+  box-shadow: 0 14px 35px rgba(111, 44, 78, 0.07);
+  scroll-snap-align: start;
+  animation: cardEntrance 0.7s ease both;
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.flavor-card:nth-child(2n) {
+  animation-delay: 0.08s;
+}
+
+.flavor-card:nth-child(3n) {
+  animation-delay: 0.16s;
+}
+
+.flavor-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 20%;
+  width: 60%;
+  height: 6px;
+  border-radius: 0 0 8px 8px;
+  background: linear-gradient(90deg, #df2870, #ff9fc5);
+  z-index: 2;
+}
+
+.flavor-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 45px rgba(214, 43, 112, 0.17);
+}
+
+/* Image area */
+.flavor-image-box {
+  height: 205px;
+  margin: 22px 22px 0;
+  background: var(--flavor-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.flavor-image-box::before {
+  content: "";
+  width: 165px;
+  height: 165px;
+  position: absolute;
+  border: 7px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.flavor-image {
+  position: relative;
+  z-index: 1;
+  width: 85%;
+  height: 85%;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 10px rgba(70, 35, 40, 0.12));
+  animation: iceCreamFloat 3s ease-in-out infinite;
+  transition: transform 0.5s ease;
+}
+
+.flavor-card:hover .flavor-image {
+  transform: scale(1.1) rotate(-3deg);
+}
+
+.sparkle {
+  position: absolute;
+  color: #f2b82c;
+  font-size: 24px;
+  z-index: 2;
+  animation: sparkleTwinkle 1.8s ease-in-out infinite;
+}
+
+.sparkle-one {
+  top: 27px;
+  right: 18%;
+}
+
+.sparkle-two {
+  bottom: 30px;
+  left: 12%;
+  color: #f28cb7;
+  animation-delay: 0.8s;
+}
+
+/* Card text */
+.flavor-content {
+  padding: 25px 20px 26px;
+}
+
+.flavor-number {
+  color: #df2870;
+  font-size: 12px;
+  letter-spacing: 3px;
+  font-weight: 800;
+  margin-bottom: 22px;
+}
+
+.flavor-content h3 {
+  font-size: 24px;
+  font-weight: 800;
+  margin: 0 0 14px;
+  overflow-wrap: anywhere;
+}
+
+.flavor-content p {
+  color: #9a8192;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 45px;
+  margin: 0 0 24px;
+}
+
+.explore-btn {
+  width: 100%;
+  border: 0;
+  padding: 15px 12px;
+  border-radius: 35px;
+  color: #fff;
+  background: linear-gradient(110deg, #d9256a, #f05c98);
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 9px 20px rgba(223, 40, 112, 0.16);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.explore-btn span {
+  display: inline-block;
+  font-size: 20px;
+  margin-left: 9px;
+  transition: transform 0.25s ease;
+}
+
+.explore-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 13px 25px rgba(223, 40, 112, 0.28);
+}
+
+.explore-btn:hover span {
+  transform: translateX(5px);
+}
+
+/* Different background for every flavor */
+.chocolate { --flavor-bg: #f3dfd2; }
+.strawberry { --flavor-bg: #ffe0ec; }
+.butterscotch { --flavor-bg: #fff2c8; }
+.mango { --flavor-bg: #ffe6b7; }
+.brownie { --flavor-bg: #f5dcd1; }
+.blackcurrant { --flavor-bg: #e8ddff; }
+.kesar { --flavor-bg: #e0f3d9; }
+.rajbhog { --flavor-bg: #fff0c5; }
+.cookies { --flavor-bg: #f0e9e5; }
+.chocochip { --flavor-bg: #f8e3d9; }
+.mint { --flavor-bg: #dff5e5; }
+.blueberry { --flavor-bg: #e6e2ff; }
+.coffee { --flavor-bg: #f2dfd1; }
+.caramel { --flavor-bg: #fff0ca; }
+
+/* Side arrows */
+.slider-arrow {
+  position: absolute;
+  z-index: 5;
+  top: 43%;
+  width: 48px;
+  height: 48px;
+  border: 0;
+  border-radius: 50%;
+  color: white;
+  background: linear-gradient(135deg, #d9256a, #f05c98);
+  box-shadow: 0 8px 20px rgba(214, 43, 112, 0.28);
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.slider-arrow:hover {
+  transform: scale(1.12);
+  box-shadow: 0 12px 28px rgba(214, 43, 112, 0.4);
+}
+
+.slider-prev {
+  left: 0;
+}
+
+.slider-next {
+  right: 0;
+}
+
+/* Small hint below the slider */
+.slider-hint {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  color: #987f90;
+  font-size: 13px;
+  margin: 5px auto 30px;
+}
+
+.slider-hint span {
+  color: #df2870;
+  font-size: 20px;
+}
+
+/* Footer */
+.flavor-footer {
+  text-align: center;
+  padding: 15px 0 8px;
+  color: #76536a;
+  font-size: 17px;
+  font-style: italic;
+}
+
+.flavor-footer > span {
+  color: #e52c75;
+  display: inline-block;
+  animation: heartbeat 1.2s infinite;
+}
+
+.flavor-footer small {
+  display: block;
+  margin-top: 8px;
+  color: #a58b9a;
+  font-size: 12px;
+  font-style: normal;
+}
+
+/* Animations */
+@keyframes introAppear {
+  from {
+    opacity: 0;
+    transform: translateY(-25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes iceCreamFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+
+@keyframes floating {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+
+@keyframes sparkleTwinkle {
+  0%, 100% {
+    opacity: 0.45;
+    transform: scale(0.8) rotate(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2) rotate(20deg);
+  }
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+/* Tablet */
+@media (max-width: 1100px) {
+  .flavor-card {
+    flex-basis: calc((100% - 52px) / 3);
+  }
+}
+
+/* Mobile */
+@media (max-width: 750px) {
+  .flavor-section {
+    padding: 35px 10px 20px;
+  }
+
+  .flavor-carousel {
+    padding: 8px 35px;
+  }
+
+  .flavor-card {
+    flex-basis: calc((100% - 18px) / 2);
+    min-height: 420px;
+  }
+
+  .flavor-image-box {
+    height: 170px;
+    margin: 18px 12px 0;
+  }
+
+  .flavor-content {
+    padding: 20px 13px;
+  }
+
+  .flavor-content h3 {
+    font-size: 20px;
+  }
+
+  .slider-arrow {
+    width: 36px;
+    height: 36px;
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 480px) {
+  .flavor-card {
+    flex-basis: 100%;
+  }
+
+  .flavor-intro {
+    margin-bottom: 25px;
+  }
+
+  .flavor-intro p {
+    font-size: 14px;
+  }
+
+  .slider-hint {
+    font-size: 11px;
+  }
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .flavor-card,
+  .flavor-image,
+  .sparkle,
+  .love-text span,
+  .flavor-footer > span,
+  .intro-decoration {
+    animation: none;
+  }
+
+  .flavor-grid {
+    scroll-behavior: auto;
+  }
+}
