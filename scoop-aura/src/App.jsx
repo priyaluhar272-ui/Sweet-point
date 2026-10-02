@@ -3,21 +3,21 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./Home";
 import Login from "./Login";
 import Register from "./Register";
-<<<<<<< HEAD
+
 import DeliveryAgentSignup from "./DeliveryAgent/DeliveryAgentSignup";
 import DeliveryAgentLogin from "./DeliveryAgent/DeliveryAgentLogin";
 import DeliveryAgentDashboard from "./DeliveryAgent/DeliveryAgentDashboard";
 import ForgotPassword from "./ForgotPassword";
+import OTPverification from "./OTPverification";
 
-=======
 import FlavorMenu from "./FlavorMenu";
->>>>>>> 37bbbccb427b871a3f8acc4a3af69f3b73eb509e
+import ResetPassword from "./ResetPassword";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-<<<<<<< HEAD
+
 
         <Route
           path="/"
@@ -47,19 +47,28 @@ function App() {
           element={<DeliveryAgentDashboard />}
         />
         <Route
-          path="/forgot-password"
+          path="/ForgotPassword"
           element={<ForgotPassword />}
         />
-      </Routes>
+        <Route
+          path="/ResetPassword"
+          element={<ResetPassword/>}
+        />
+        <Route
+          path="/ResetPassword"
+          element={<ResetPassword/>}
+        />
+        <Route
+          path="/OTPverification"
+          element={<OTPverification/>}
+        />
       
-
-=======
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/flavormenu" element={<FlavorMenu />} />
+
       </Routes>
->>>>>>> 37bbbccb427b871a3f8acc4a3af69f3b73eb509e
     </BrowserRouter>
   );
 }

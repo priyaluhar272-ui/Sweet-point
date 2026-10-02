@@ -116,7 +116,7 @@ function Login() {
             <div className="forgot-password">
               <button
                 type="button"
-                onClick={() => navigate("/forgot-password")}
+                onClick={() => navigate("/ForgotPassword")}
               >
                 Forgot Password ?
               </button>
