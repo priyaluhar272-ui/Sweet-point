@@ -1,0 +1,222 @@
+
+.shop-page {
+  min-height: 100vh;
+  padding: 28px 16px;
+  background: linear-gradient(135deg, #fff5f9, #fffafd);
+  color: #302438;
+  font-family: Arial, sans-serif;
+}
+
+.shop-back {
+  border: 1px solid #f1c5d9;
+  background: white;
+  color: #d51e70;
+  border-radius: 8px;
+  padding: 10px 15px;
+  cursor: pointer;
+  margin-bottom: 20px;
+}
+
+.shop-panel {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 28px;
+  border: 1px solid #f1dce7;
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 8px 30px #74284c0c;
+}
+
+.shop-panel h1 {
+  color: #d51e70;
+  margin-top: 0;
+}
+
+.shop-panel > p {
+  color: #807181;
+}
+
+.shop-panel label {
+  display: block;
+  margin: 17px 0 7px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.shop-panel input,
+.shop-panel textarea,
+.shop-panel select {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ead6e2;
+  border-radius: 8px;
+  background: #fffafd;
+  font: inherit;
+}
+
+.shop-panel textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.shop-row,
+.shop-total,
+.shop-order-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.shop-row {
+  padding: 13px 0;
+  border-bottom: 1px solid #f1e5ec;
+}
+
+.shop-row p {
+  margin: 6px 0 0;
+  color: #857589;
+  font-size: 13px;
+}
+
+.shop-total {
+  margin: 20px 0;
+  padding: 16px;
+  border-radius: 9px;
+  background: #fff0f6;
+  color: #d51e70;
+}
+
+.shop-primary {
+  display: block;
+  width: 100%;
+  padding: 13px 16px;
+  margin-top: 18px;
+  border: none;
+  border-radius: 9px;
+  background: linear-gradient(100deg, #e93686, #cf1b69);
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.shop-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.shop-message {
+  color: #c51d61;
+  font-size: 14px;
+}
+
+.shop-note {
+  color: #8b7b8b;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.shop-booking,
+.shop-order {
+  padding: 18px;
+  margin-top: 16px;
+  border: 1px solid #f0dce7;
+  border-radius: 12px;
+  background: #fffafd;
+}
+
+.shop-booking {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.shop-booking h3,
+.shop-order h3 {
+  margin-top: 0;
+}
+
+.shop-booking p,
+.shop-order p {
+  color: #766779;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.shop-status {
+  display: inline-block;
+  padding: 6px 11px;
+  border-radius: 20px;
+  background: #e4f8eb;
+  color: #168046;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.shop-status.cancelled {
+  background: #ffe8ed;
+  color: #c51e56;
+}
+
+.shop-cancel {
+  border: 1px solid #e8b1c5;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: white;
+  color: #c51e56;
+  cursor: pointer;
+}
+
+.shop-order-items {
+  padding: 10px 0;
+  border-top: 1px solid #f0e4eb;
+  border-bottom: 1px solid #f0e4eb;
+}
+
+.shop-order-items > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  font-size: 14px;
+}
+
+.shop-empty {
+  text-align: center;
+  padding: 35px 10px;
+}
+
+.shop-empty > span {
+  font-size: 55px;
+}
+
+.shop-empty p {
+  color: #857589;
+}
+
+.shop-success {
+  padding: 14px;
+  margin-bottom: 18px;
+  border-radius: 9px;
+  background: #e7f9ee;
+  color: #167840;
+}
+
+@media (max-width: 550px) {
+  .shop-panel {
+    padding: 18px;
+  }
+
+  .shop-booking {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .shop-row {
+    font-size: 13px;
+  }
+}

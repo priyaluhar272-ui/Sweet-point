@@ -1,111 +1,153 @@
 
-
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./FlavorMenu.css";
 
-// Ice cream images
-import ChocolateImg from "./IMAGE/Bowl-of-chocolate-ice-cream.jpg";
-import StrawberryImg from "./IMAGE/Strawberry.jfif";
-import ButterscotchImg from "./IMAGE/Butterscotch.jfif";
-import MangoImg from "./IMAGE/Mango.jfif";
-import BrownieFudgeImg from "./IMAGE/Brownie Fudge.jfif";
-import BlackCurrantImg from "./IMAGE/Black Currant.jfif";
-import KesarPistaImg from "./IMAGE/Kesar Pista.jfif";
-import RajbhogImg from "./IMAGE/Rajbhog.jfif";
-import CookiesCreamImg from "./IMAGE/Cookies & Cream.jfif";
-import ChocoChipImg from "./IMAGE/Choco Chip.jfif";
-import MintChocolateImg from "./IMAGE/Mint Chocolate.jfif";
-import BlueberryImg from "./IMAGE/Blueberry.jfif";
-import CoffeeImg from "./IMAGE/Coffee.jfif";
-import CaramelImg from "./IMAGE/Caramel.jfif";
+// Automatically load images from src/falvoricecream
+// This code is for a Vite React project.
+const imageModules = import.meta.glob(
+  "./falvoricecream/*",
+  {
+    eager: true,
+    query: "?url",
+    import: "default",
+  }
+);
+
+const normalize = (value) =>
+  value.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+const imageFiles = Object.entries(imageModules)
+  .map(([path, image]) => ({
+    path,
+    image,
+    filename: path.split("/").pop().split(".")[0],
+    normalized: normalize(path.split("/").pop().split(".")[0]),
+  }))
+  .sort((a, b) => a.filename.localeCompare(b.filename));
 
 const flavors = [
   {
     name: "Chocolate",
     description: "Rich & creamy chocolate",
-    image: ChocolateImg,
+    emoji: "🍫",
     className: "chocolate",
+    aliases: ["bowl of chocolate ice cream", "choclate"],
   },
   {
     name: "Strawberry",
     description: "Fresh fruity sweetness",
-    image: StrawberryImg,
+    emoji: "🍓",
     className: "strawberry",
+    aliases: ["strawberry"],
   },
   {
     name: "Butterscotch",
     description: "Crunchy caramel magic",
-    image: ButterscotchImg,
+    emoji: "🍮",
     className: "butterscotch",
+    aliases: ["butterscotch"],
   },
   {
     name: "Mango",
     description: "Taste of summer sunshine",
-    image: MangoImg,
+    emoji: "🥭",
     className: "mango",
+    aliases: ["mango"],
   },
   {
     name: "Brownie Fudge",
     description: "Brownie meets ice cream",
-    image: BrownieFudgeImg,
+    emoji: "🍫",
     className: "brownie",
+    aliases: ["brownie fudge", "rownie fudge"],
   },
   {
     name: "Black Currant",
     description: "Berrylicious happiness",
-    image: BlackCurrantImg,
+    emoji: "🫐",
     className: "blackcurrant",
+    aliases: ["black currant"],
   },
   {
     name: "Kesar Pista",
     description: "Royal nutty goodness",
-    image: KesarPistaImg,
+    emoji: "💚",
     className: "kesar",
+    aliases: ["kesar pista"],
   },
   {
     name: "Rajbhog",
     description: "A royal Indian treat",
-    image: RajbhogImg,
+    emoji: "👑",
     className: "rajbhog",
+    aliases: ["rajbhog"],
   },
   {
     name: "Cookies & Cream",
     description: "Cookies in every bite",
-    image: CookiesCreamImg,
+    emoji: "🍪",
     className: "cookies",
+    aliases: ["cookies and cream", "cookies cream"],
   },
   {
     name: "Choco Chip",
     description: "Chocolate chip heaven",
-    image: ChocoChipImg,
+    emoji: "🍫",
     className: "chocochip",
+    aliases: ["choco chip"],
   },
   {
     name: "Mint Chocolate",
     description: "Cool mint, rich chocolate",
-    image: MintChocolateImg,
+    emoji: "🌿",
     className: "mint",
+    aliases: ["mint chocolate"],
   },
   {
     name: "Blueberry",
     description: "Sweet and tangy berries",
-    image: BlueberryImg,
+    emoji: "🫐",
     className: "blueberry",
+    aliases: ["blueberry"],
   },
   {
     name: "Coffee",
     description: "Coffee lover's delight",
-    image: CoffeeImg,
+    emoji: "☕",
     className: "coffee",
+    aliases: ["coffee"],
   },
   {
     name: "Caramel",
     description: "Smooth golden sweetness",
-    image: CaramelImg,
+    emoji: "🍯",
     className: "caramel",
+    aliases: ["caramel"],
+  },
+  {
+    name: "Vanilla",
+    description: "Classic creamy happiness",
+    emoji: "🍨",
+    className: "vanilla",
+    aliases: ["vanilla", "vanila"],
   },
 ];
+
+// Find a matching image for each flavor card
+const getFlavorImage = (flavor) => {
+  for (const alias of flavor.aliases) {
+    const searchName = normalize(alias);
+
+    const match = imageFiles.find((file) =>
+      file.normalized.includes(searchName)
+    );
+
+    if (match) return match.image;
+  }
+
+  return null;
+};
 
 function FlavorMenu() {
   const sliderRef = useRef(null);
@@ -120,21 +162,21 @@ function FlavorMenu() {
     if (!card) return;
 
     const styles = window.getComputedStyle(slider);
-    const gap = parseFloat(styles.columnGap) || 0;
+    const gap =
+      parseFloat(styles.columnGap) ||
+      parseFloat(styles.gap) ||
+      0;
+
     const distance = card.getBoundingClientRect().width + gap;
     const maxScroll = slider.scrollWidth - slider.clientWidth;
 
+    if (maxScroll <= 0) return;
+
     if (direction === "next") {
       if (slider.scrollLeft >= maxScroll - 5) {
-        slider.scrollTo({
-          left: 0,
-          behavior: "smooth",
-        });
+        slider.scrollTo({ left: 0, behavior: "smooth" });
       } else {
-        slider.scrollBy({
-          left: distance,
-          behavior: "smooth",
-        });
+        slider.scrollBy({ left: distance, behavior: "smooth" });
       }
     } else {
       if (slider.scrollLeft <= 5) {
@@ -151,7 +193,7 @@ function FlavorMenu() {
     }
   };
 
-  // Automatic slide every 3 seconds
+  // Automatic sliding pauses while the user hovers over the cards
   useEffect(() => {
     if (isHovering) return undefined;
 
@@ -162,10 +204,12 @@ function FlavorMenu() {
     return () => clearInterval(timer);
   }, [isHovering]);
 
+  // Open the selected flavor's items page
   const selectFlavor = (flavor) => {
-    // Selected flavor can be used on the next page.
     navigate("/flavor-items", {
-      state: { flavor: flavor.name },
+      state: {
+        flavor: flavor.name,
+      },
     });
   };
 
@@ -190,7 +234,7 @@ function FlavorMenu() {
         </div>
       </div>
 
-      {/* Slider */}
+      {/* Flavor slider */}
       <div
         className="flavor-carousel"
         onMouseEnter={() => setIsHovering(true)}
@@ -201,46 +245,80 @@ function FlavorMenu() {
           className="slider-arrow slider-prev"
           onClick={() => moveSlider("prev")}
           aria-label="Previous flavors"
-          title="Previous flavors"
         >
           &#10094;
         </button>
 
         <div className="flavor-grid" ref={sliderRef}>
-          {flavors.map((flavor, index) => (
-            <article
-              className={`flavor-card ${flavor.className}`}
-              key={flavor.name}
-            >
-              <div className="flavor-image-box">
-                <img
-                  src={flavor.image}
-                  alt={flavor.name}
-                  className="flavor-image"
-                />
+          {flavors.map((flavor, index) => {
+            const flavorImage = getFlavorImage(flavor);
 
-                <span className="sparkle sparkle-one">✦</span>
-                <span className="sparkle sparkle-two">✧</span>
-              </div>
+            return (
+              <article
+                className={`flavor-card ${flavor.className}`}
+                key={flavor.name}
+              >
+                <div
+                  className="flavor-image-box"
+                  onClick={() => selectFlavor(flavor)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(event) => {
+                    if (
+                      event.key === "Enter" ||
+                      event.key === " "
+                    ) {
+                      event.preventDefault();
+                      selectFlavor(flavor);
+                    }
+                  }}
+                  aria-label={`View ${flavor.name} ice creams`}
+                  style={{ cursor: "pointer" }}
+                >
+                  {flavorImage ? (
+                    <img
+                      src={flavorImage}
+                      alt={flavor.name}
+                      className="flavor-image"
+                    />
+                  ) : (
+                    <div
+                      className="flavor-image-fallback"
+                      style={{
+                        fontSize: "90px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        height: "100%",
+                      }}
+                    >
+                      {flavor.emoji}
+                    </div>
+                  )}
 
-              <div className="flavor-content">
-                <div className="flavor-number">
-                  FLAVOR {String(index + 1).padStart(2, "0")}
+                  <span className="sparkle sparkle-one">✦</span>
+                  <span className="sparkle sparkle-two">✧</span>
                 </div>
 
-                <h3>{flavor.name}</h3>
-                <p>{flavor.description}</p>
+                <div className="flavor-content">
+                  <div className="flavor-number">
+                    FLAVOR {String(index + 1).padStart(2, "0")}
+                  </div>
 
-                <button
-                  type="button"
-                  className="explore-btn"
-                  onClick={() => selectFlavor(flavor)}
-                >
-                  Explore Flavor <span>→</span>
-                </button>
-              </div>
-            </article>
-          ))}
+                  <h3>{flavor.name}</h3>
+                  <p>{flavor.description}</p>
+
+                  <button
+                    type="button"
+                    className="explore-btn"
+                    onClick={() => selectFlavor(flavor)}
+                  >
+                    Explore Flavor <span>→</span>
+                  </button>
+                </div>
+              </article>
+            );
+          })}
         </div>
 
         <button
@@ -248,7 +326,6 @@ function FlavorMenu() {
           className="slider-arrow slider-next"
           onClick={() => moveSlider("next")}
           aria-label="Next flavors"
-          title="Next flavors"
         >
           &#10095;
         </button>
