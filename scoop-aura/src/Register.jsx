@@ -13,17 +13,22 @@ function Register() {
     useState("");
 
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const [shake, setShake] = useState(false);
+  const [loading, setLoading] = useState(false);
 
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
 
     e.preventDefault();
 
     setError("");
+    setSuccess("");
     setShake(false);
 
+
+    // NAME VALIDATION
 
     if (name.trim() === "") {
 
@@ -33,6 +38,8 @@ function Register() {
       return;
     }
 
+
+    // EMAIL VALIDATION
 
     if (email.trim() === "") {
 
@@ -56,6 +63,8 @@ function Register() {
     }
 
 
+    // PASSWORD VALIDATION
+
     if (password.length < 6) {
 
       setError(
@@ -68,6 +77,8 @@ function Register() {
     }
 
 
+    // CONFIRM PASSWORD
+
     if (password !== confirmPassword) {
 
       setError("Passwords do not match.");
@@ -77,19 +88,99 @@ function Register() {
     }
 
 
-    alert("Registration Successful! 🎉");
+    // SEND DATA TO FASTAPI
 
-    navigate("/login");
+    try {
+
+      setLoading(true);
+
+      const response = await fetch(
+        "http://127.0.0.1:8000/api/register",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json"
+          },
+
+          body: JSON.stringify({
+            name: name.trim(),
+            email: email.trim(),
+            password: password
+          })
+        }
+      );
+
+
+      const data = await response.json();
+
+
+      // REGISTRATION SUCCESS
+
+      if (response.ok && data.success) {
+
+        setSuccess(
+          "Registered Successfully! 🎉"
+        );
+
+        // Go to login after 2 seconds
+
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
+
+      }
+
+
+      // REGISTRATION FAILED
+
+      else {
+
+        setError(
+          data.message || "Registration failed."
+        );
+
+        setShake(true);
+      }
+
+    }
+
+
+    // SERVER CONNECTION ERROR
+
+    catch (error) {
+
+      console.error(
+        "Registration Error:",
+        error
+      );
+
+      setError(
+        "Unable to connect to the server. Please try again."
+      );
+
+      setShake(true);
+
+    }
+
+
+    finally {
+
+      setLoading(false);
+
+    }
 
   };
 
 
   return (
+
     <div className="register-page">
 
       <div className="register-decoration">
         🍨
       </div>
+
 
       <div
         className={`register-box ${
@@ -101,7 +192,9 @@ function Register() {
           🍦
         </div>
 
+
         <h1>Create Account</h1>
+
 
         <p className="register-subtitle">
           Join the ScoopAura family
@@ -123,6 +216,7 @@ function Register() {
               onChange={(e) =>
                 setName(e.target.value)
               }
+              disabled={loading}
             />
 
           </div>
@@ -141,6 +235,7 @@ function Register() {
               onChange={(e) =>
                 setEmail(e.target.value)
               }
+              disabled={loading}
             />
 
           </div>
@@ -159,12 +254,13 @@ function Register() {
               onChange={(e) =>
                 setPassword(e.target.value)
               }
+              disabled={loading}
             />
 
           </div>
 
 
-          {/* CONFIRM */}
+          {/* CONFIRM PASSWORD */}
 
           <div className="register-input">
 
@@ -177,12 +273,13 @@ function Register() {
               onChange={(e) =>
                 setConfirmPassword(e.target.value)
               }
+              disabled={loading}
             />
 
           </div>
 
 
-          {/* ERROR */}
+          {/* ERROR MESSAGE */}
 
           {error && (
 
@@ -195,11 +292,36 @@ function Register() {
           )}
 
 
+          {/* SUCCESS MESSAGE */}
+
+          {success && (
+
+            <div className="register-success">
+
+              ✅ {success}
+
+              <div className="success-subtext">
+                Redirecting to login...
+              </div>
+
+            </div>
+
+          )}
+
+
+          {/* REGISTER BUTTON */}
+
           <button
             type="submit"
             className="register-submit"
+            disabled={loading || success}
           >
-            Create Account 🎉
+
+            {loading
+              ? "Creating Account..."
+              : "Create Account 🎉"
+            }
+
           </button>
 
         </form>
@@ -213,6 +335,7 @@ function Register() {
         <button
           className="login-link"
           onClick={() => navigate("/login")}
+          disabled={loading}
         >
           Login
         </button>
@@ -221,6 +344,7 @@ function Register() {
         <button
           className="register-home"
           onClick={() => navigate("/")}
+          disabled={loading}
         >
           ← Back to Home
         </button>
@@ -228,6 +352,7 @@ function Register() {
       </div>
 
     </div>
+
   );
 }
 

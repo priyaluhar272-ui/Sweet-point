@@ -13,6 +13,9 @@ function Login() {
 
   const [shake, setShake] = useState(false);
 
+  const handleForgotPassword = () => {
+    alert("Forgot Password clicked!");
+  };
   const handleLogin = (e) => {
 
     e.preventDefault();
@@ -68,9 +71,8 @@ function Login() {
       </div>
 
       <div
-        className={`login-box ${
-          shake ? "shake" : ""
-        }`}
+        className={`login-box ${shake ? "shake" : ""
+          }`}
       >
 
         <div className="login-icon">
@@ -103,19 +105,27 @@ function Login() {
 
 
           <div className="input-group">
-
             <label>Password</label>
-
             <input
               type="password"
               placeholder="Enter your password"
               value={password}
-              onChange={(e) =>
-                setPassword(e.target.value)
-              }
+              onChange={(e) => setPassword(e.target.value)}
             />
 
+            <div className="forgot-password">
+              <button
+                type="button"
+                onClick={() => navigate("/ForgotPassword")}
+              >
+                Forgot Password ?
+              </button>
+            </div>
           </div>
+
+
+
+
 
 
           {error && (
@@ -149,6 +159,7 @@ function Login() {
         <button
           className="back-home"
           onClick={() => navigate("/")}
+
         >
           ← Back to Home
         </button>

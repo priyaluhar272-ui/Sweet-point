@@ -1,14 +1,31 @@
 .register-page {
+
   min-height: 100vh;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   background:
-    radial-gradient(circle at 10% 20%, #ffd3e4, transparent 25%),
-    radial-gradient(circle at 90% 80%, #ffe2b8, transparent 25%),
-    linear-gradient(135deg,#fff7fb,#ffedf4);
+    radial-gradient(
+      circle at 10% 20%,
+      #ffd5e6,
+      transparent 25%
+    ),
+
+    radial-gradient(
+      circle at 90% 80%,
+      #ffe4b8,
+      transparent 25%
+    ),
+
+    linear-gradient(
+      135deg,
+      #fff5fa,
+      #ffeaf3
+    );
 
   position: relative;
 
@@ -16,34 +33,51 @@
 }
 
 
+/* REGISTER BOX */
+
 .register-box {
 
-  width: 450px;
+  width: 420px;
 
-  padding: 40px;
+  padding: 45px;
 
-  background: rgba(255,255,255,0.94);
+  background: rgba(
+    255,
+    255,
+    255,
+    0.92
+  );
 
   border-radius: 30px;
 
   box-shadow:
-    0 25px 60px rgba(0,0,0,0.12);
+    0 25px 60px
+    rgba(0, 0, 0, 0.12);
 
   text-align: center;
 
-  animation: registerAppear 0.8s ease;
+  animation:
+    registerAppear
+    0.8s ease;
 }
 
 
-.register-shake {
-  animation: registerShake 0.4s ease;
+.register-box.register-shake {
+
+  animation:
+    registerShake
+    0.4s ease;
+
 }
 
+
+/* REGISTER ICON */
 
 .register-icon {
 
-  width: 75px;
-  height: 75px;
+  width: 80px;
+
+  height: 80px;
 
   margin: auto;
 
@@ -54,28 +88,34 @@
   display: flex;
 
   align-items: center;
+
   justify-content: center;
 
   font-size: 40px;
 
-  animation: registerIcon 2s infinite;
+  animation:
+    registerIconFloat
+    2s infinite;
+
 }
 
 
 .register-box h1 {
 
-  margin-top: 18px;
+  margin-top: 20px;
 
-  font-size: 30px;
+  font-size: 32px;
+
+  color: #3a2530;
 
 }
 
 
 .register-subtitle {
 
-  color: #806c75;
+  margin: 10px 0 30px;
 
-  margin: 8px 0 25px;
+  color: #806c75;
 
 }
 
@@ -86,7 +126,7 @@
 
   text-align: left;
 
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 
 }
 
@@ -95,9 +135,9 @@
 
   display: block;
 
-  font-weight: bold;
+  margin-bottom: 7px;
 
-  margin-bottom: 6px;
+  font-weight: bold;
 
 }
 
@@ -106,17 +146,20 @@
 
   width: 100%;
 
-  padding: 13px 15px;
+  padding: 14px 16px;
 
-  border: 2px solid #f1d5df;
+  border:
+    2px solid #f1d5df;
 
   border-radius: 12px;
 
   outline: none;
 
-  font-size: 14px;
+  font-size: 15px;
 
   transition: 0.3s;
+
+  box-sizing: border-box;
 
 }
 
@@ -126,7 +169,22 @@
   border-color: #e84d8a;
 
   box-shadow:
-    0 0 0 4px rgba(232,77,138,0.1);
+    0 0 0 4px
+    rgba(
+      232,
+      77,
+      138,
+      0.1
+    );
+
+}
+
+
+.register-input input:disabled {
+
+  background: #f8f8f8;
+
+  cursor: not-allowed;
 
 }
 
@@ -135,24 +193,64 @@
 
 .register-error {
 
+  padding: 12px;
+
+  margin-bottom: 15px;
+
+  border-radius: 10px;
+
   background: #ffe5e8;
 
   color: #c62828;
 
-  padding: 10px;
-
-  border-radius: 10px;
-
-  margin-bottom: 15px;
-
   font-size: 14px;
 
-  animation: errorAnimation 0.3s ease;
+  animation:
+    registerErrorAppear
+    0.3s ease;
 
 }
 
 
-/* BUTTON */
+/* SUCCESS */
+
+.register-success {
+
+  padding: 14px;
+
+  margin-bottom: 15px;
+
+  border-radius: 10px;
+
+  background: #e8f8ee;
+
+  color: #218838;
+
+  font-size: 15px;
+
+  font-weight: bold;
+
+  animation:
+    registerSuccessAppear
+    0.4s ease;
+
+}
+
+
+.success-subtext {
+
+  margin-top: 5px;
+
+  font-size: 12px;
+
+  font-weight: normal;
+
+  color: #5d8068;
+
+}
+
+
+/* REGISTER BUTTON */
 
 .register-submit {
 
@@ -181,19 +279,37 @@
 
 .register-submit:hover {
 
-  transform: translateY(-3px);
+  transform:
+    translateY(-3px);
 
   box-shadow:
-    0 10px 25px rgba(232,77,138,0.3);
+    0 10px 25px
+    rgba(
+      232,
+      77,
+      138,
+      0.3
+    );
 
 }
 
 
-/* LINKS */
+.register-submit:disabled {
+
+  opacity: 0.7;
+
+  cursor: not-allowed;
+
+  transform: none;
+
+}
+
+
+/* LOGIN */
 
 .already-account {
 
-  margin-top: 20px;
+  margin-top: 25px;
 
   color: #806c75;
 
@@ -202,9 +318,11 @@
 
 .login-link {
 
-  border: none;
+  margin-top: 10px;
 
   background: none;
+
+  border: none;
 
   color: #e84d8a;
 
@@ -215,19 +333,39 @@
 }
 
 
+.login-link:disabled {
+
+  cursor: not-allowed;
+
+  opacity: 0.6;
+
+}
+
+
+/* HOME */
+
 .register-home {
 
   display: block;
 
-  margin: 20px auto 0;
-
-  border: none;
+  margin: 25px auto 0;
 
   background: none;
+
+  border: none;
 
   color: #806c75;
 
   cursor: pointer;
+
+}
+
+
+.register-home:disabled {
+
+  cursor: not-allowed;
+
+  opacity: 0.6;
 
 }
 
@@ -238,13 +376,17 @@
 
   position: absolute;
 
-  right: 10%;
+  left: 10%;
 
-  top: 15%;
+  top: 20%;
 
-  font-size: 80px;
+  font-size: 70px;
 
-  animation: decorationAnimation 4s infinite;
+  opacity: 0.6;
+
+  animation:
+    registerDecorationFloat
+    4s infinite;
 
 }
 
@@ -258,7 +400,7 @@
     opacity: 0;
 
     transform:
-      translateY(60px)
+      translateY(50px)
       scale(0.9);
 
   }
@@ -278,57 +420,66 @@
 
 @keyframes registerShake {
 
-  0%,100% {
+  0%,
+  100% {
 
-    transform: translateX(0);
+    transform:
+      translateX(0);
 
   }
 
   25% {
 
-    transform: translateX(-10px);
+    transform:
+      translateX(-10px);
 
   }
 
   50% {
 
-    transform: translateX(10px);
+    transform:
+      translateX(10px);
 
   }
 
   75% {
 
-    transform: translateX(-10px);
+    transform:
+      translateX(-10px);
 
   }
 
 }
 
 
-@keyframes registerIcon {
+@keyframes registerIconFloat {
 
-  0%,100% {
+  0%,
+  100% {
 
-    transform: translateY(0);
+    transform:
+      translateY(0);
 
   }
 
   50% {
 
-    transform: translateY(-10px);
+    transform:
+      translateY(-10px);
 
   }
 
 }
 
 
-@keyframes errorAnimation {
+@keyframes registerErrorAppear {
 
   from {
 
     opacity: 0;
 
-    transform: scale(0.9);
+    transform:
+      scale(0.9);
 
   }
 
@@ -336,16 +487,41 @@
 
     opacity: 1;
 
-    transform: scale(1);
+    transform:
+      scale(1);
 
   }
 
 }
 
 
-@keyframes decorationAnimation {
+@keyframes registerSuccessAppear {
 
-  0%,100% {
+  from {
+
+    opacity: 0;
+
+    transform:
+      scale(0.9);
+
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform:
+      scale(1);
+
+  }
+
+}
+
+
+@keyframes registerDecorationFloat {
+
+  0%,
+  100% {
 
     transform:
       translateY(0)
@@ -357,26 +533,7 @@
 
     transform:
       translateY(-30px)
-      rotate(12deg);
-
-  }
-
-}
-
-
-@media (max-width: 600px) {
-
-  .register-box {
-
-    width: 90%;
-
-    padding: 30px 20px;
-
-  }
-
-  .register-decoration {
-
-    display: none;
+      rotate(10deg);
 
   }
 

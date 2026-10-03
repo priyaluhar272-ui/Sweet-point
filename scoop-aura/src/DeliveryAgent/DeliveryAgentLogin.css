@@ -1,0 +1,475 @@
+@import url("https://fonts.googleapis.com/css2?family=Pacifico&display=swap");
+@import url("https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css");
+
+
+* {
+  box-sizing: border-box;
+}
+
+
+body {
+  margin: 0;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+}
+
+
+/* =========================================
+   MAIN PAGE
+========================================= */
+
+.login-page {
+  min-height: 100vh;
+
+  background: #f9fafb;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 30px 20px;
+}
+
+
+.login-container {
+  width: 100%;
+
+  max-width: 1000px;
+
+  padding: 25px 0;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.login-header {
+  text-align: center;
+
+  margin-bottom: 32px;
+}
+
+
+.brand-name {
+  font-family: "Pacifico";
+
+  color: #e94b89;
+
+  font-size: 40px;
+
+  font-weight: normal;
+
+  margin: 0 0 8px;
+}
+
+
+.login-header h2 {
+  font-size: 24px;
+
+  font-weight: 600;
+
+  color: #1f2937;
+
+  margin: 0;
+}
+
+
+.title-line {
+  width: 500px;
+
+  height: 6px;
+
+  background: #e94b89;
+
+  margin: 13px auto 0;
+
+  border-radius: 999px;
+}
+
+
+/* =========================================
+   CARD
+========================================= */
+
+.login-card {
+  background: white;
+
+  border-radius: 10px;
+
+  padding: 42px 48px;
+
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+
+  max-width: 1000px;
+
+  margin: auto;
+}
+
+
+/* =========================================
+   MESSAGE
+========================================= */
+
+.login-message {
+  text-align: center;
+
+  color: #dc2626;
+
+  margin-bottom: 20px;
+
+  font-size: 15px;
+
+  font-weight: 500;
+}
+
+
+/* =========================================
+   BACK
+========================================= */
+
+.back-section {
+  margin-bottom: 25px;
+}
+
+
+.back-section a {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  color: #4b5563;
+
+  text-decoration: none;
+
+  font-size: 15px;
+
+  transition: 0.2s;
+}
+
+
+.back-section a:hover {
+  color: #111827;
+}
+
+
+.back-section i {
+  font-size: 19px;
+}
+
+
+/* =========================================
+   WELCOME
+========================================= */
+
+.welcome-section {
+  margin-bottom: 30px;
+}
+
+
+.welcome-section h1 {
+  margin: 0;
+
+  font-size: 28px;
+
+  font-weight: 700;
+
+  color: #0f172b;
+}
+
+
+.welcome-section p {
+  margin: 8px 0 0;
+
+  font-size: 16px;
+
+  color: #6b7280;
+}
+
+
+/* =========================================
+   FORM GROUP
+========================================= */
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+
+.form-group label {
+  display: block;
+
+  font-size: 16px;
+
+  font-weight: 600;
+
+  color: #374151;
+
+  margin-bottom: 9px;
+}
+
+
+.required {
+  color: #ef4444;
+
+  margin-left: 4px;
+}
+
+
+/* =========================================
+   INPUT
+========================================= */
+
+.input-wrapper {
+  position: relative;
+
+  width: 100%;
+}
+
+
+.input-wrapper > i:first-child {
+  position: absolute;
+
+  left: 15px;
+
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  color: #9ca3af;
+
+  font-size: 19px;
+
+  z-index: 2;
+
+  pointer-events: none;
+}
+
+
+.input-wrapper input {
+  width: 100%;
+
+  height: 52px;
+
+  padding: 0 45px;
+
+  border: 1px solid #d1d5db;
+
+  border-radius: 8px;
+
+  color: #374151;
+
+  background: white;
+
+  font-size: 15px;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+
+.input-wrapper input::placeholder {
+  color: #9ca3af;
+
+  font-size: 15px;
+}
+
+
+.input-wrapper input:focus {
+  border-color: #fea116;
+
+  box-shadow:
+    0 0 0 3px rgba(254, 161, 22, 0.12);
+}
+
+
+/* =========================================
+   PASSWORD EYE
+========================================= */
+
+.password-eye {
+  position: absolute;
+
+  right: 15px;
+
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  color: #9ca3af;
+
+  cursor: pointer;
+
+  font-size: 19px;
+
+  z-index: 3;
+}
+
+
+.password-eye:hover {
+  color: #fea116;
+}
+
+
+/* =========================================
+   LOGIN BUTTON
+========================================= */
+
+.login-button {
+  width: 100%;
+
+  height: 53px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: #e94b89;
+
+  color: white;
+
+  font-size: 16px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s,
+    transform 0.1s;
+}
+
+
+.login-button:hover {
+  background: #ca0076;
+}
+
+
+.login-button:active {
+  transform: scale(0.99);
+}
+
+
+/* =========================================
+   LINKS
+========================================= */
+
+.login-links {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-top: 25px;
+
+  font-size: 15px;
+}
+
+
+.login-links a {
+  color: #e70481;
+
+  text-decoration: none;
+
+  font-weight: 500;
+
+  transition: 0.2s;
+}
+
+
+.login-links a:hover {
+  color: #ca0076;
+
+  text-decoration: underline;
+}
+
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.footer {
+  text-align: center;
+
+  margin-top: 24px;
+
+  color: #4b5563;
+
+  font-size: 14px;
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 768px) {
+
+  .login-page {
+    padding: 20px 12px;
+  }
+
+
+  .login-container {
+    max-width: 100%;
+  }
+
+
+  .login-card {
+    padding: 30px 22px;
+  }
+
+
+  .brand-name {
+    font-size: 36px;
+  }
+
+
+  .login-header h2 {
+    font-size: 21px;
+  }
+
+
+  .welcome-section h1 {
+    font-size: 25px;
+  }
+
+}
+
+
+@media (max-width: 480px) {
+
+  .login-card {
+    padding: 25px 18px;
+  }
+
+
+  .form-group label {
+    font-size: 15px;
+  }
+
+
+  .input-wrapper input {
+    height: 50px;
+
+    font-size: 14px;
+  }
+
+
+  .login-links {
+    font-size: 14px;
+  }
+
+}
