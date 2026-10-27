@@ -1,56 +1,114 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./DeliveryAgentDashboard.css";
 
 const DeliveryAgentDashboard = () => {
+  const navigate = useNavigate();
   const [status, setStatus] = useState("Active");
+  const [agent, setAgent] = useState(null);
+  const [orders, setOrders] = useState([]);
+  const [ordersLoading, setOrdersLoading] = useState(true);
+  const [ordersError, setOrdersError] = useState("");
   const [showStatusMenu, setShowStatusMenu] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [search, setSearch] = useState("");
 
-  const [orders] = useState([
-    {
-      orderId: "#ORD001",
-      customerName: "Rahul Patel",
-      phoneNumber: "9876543210",
-      amount: 450,
-      status: "Delivered",
-      orderedOn: "Sep 28, 2026 - 10:30 AM",
-      assignedAt: "Sep 28, 2026 - 10:45 AM",
-    },
-    {
-      orderId: "#ORD002",
-      customerName: "Amit Shah",
-      phoneNumber: "9876543211",
-      amount: 620,
-      status: "Out for delivery",
-      orderedOn: "Sep 28, 2026 - 11:15 AM",
-      assignedAt: "Sep 28, 2026 - 11:30 AM",
-    },
-    {
-      orderId: "#ORD003",
-      customerName: "Mehta",
-      phoneNumber: "9876543212",
-      amount: 350,
-      status: "Preparing",
-      orderedOn: "Sep 28, 2026 - 12:00 PM",
-      assignedAt: "Sep 28, 2026 - 12:20 PM",
-    },
-    {
-      orderId: "#ORD004",
-      customerName: "denim Joshi",
-      phoneNumber: "9876543213",
-      amount: 780,
-      status: "Cancelled",
-      orderedOn: "Sep 28, 2026 - 01:10 PM",
-      assignedAt: "Sep 28, 2026 - 01:25 PM",
-    },
-  ]);
+  const API_BASE_URL = "http://127.0.0.1:8000";
 
+  const loadAssignedOrders = useCallback(async (agentId) => {
+    if (!agentId) {
+      setOrders([]);
+      setOrdersError("Delivery agent session nahi mila. Please dobara login karo.");
+      setOrdersLoading(false);
+      return;
+    }
+    setOrdersLoading(true);
+    setOrdersError("");
+    try {
+      const response = await fetch(`${API_BASE_URL}/delivery-agent/${agentId}/orders`);
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.detail || `Orders load failed (${response.status})`);
+      const rows = Array.isArray(data) ? data : data.orders;
+      if (!Array.isArray(rows)) throw new Error("Assigned-orders API response is not a list.");
+      setOrders(rows.map((row) => {
+        const orderedDate = row.created_at || row.ordered_at;
+        const assignedDate = row.assigned_at;
+        const formatDateTime = (value) => value ? new Date(value).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" }) : "—";
+        return {
+          orderId: `#${row.order_id}`,
+          customerName: row.customer_name || "Unknown customer",
+          phoneNumber: row.customer_email || "Contact details unavailable",
+          amount: Number(row.total_price || 0),
+          itemName: row.item_name || row.flavour || "Ice Cream",
+          quantity: Number(row.quantity || 0),
+          status: row.status || "Preparing",
+          orderedOn: formatDateTime(orderedDate),
+          assignedAt: formatDateTime(assignedDate),
+        };
+      }));
+    } catch (error) {
+      console.error("Assigned orders API error:", error);
+      setOrders([]);
+      setOrdersError(error.message || "Assigned orders load nahi ho paaye.");
+    } finally {
+      setOrdersLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    let savedAgent = null;
+    try {
+      savedAgent = JSON.parse(localStorage.getItem("deliveryAgent") || "null")
+        || JSON.parse(sessionStorage.getItem("deliveryAgent") || "null");
+    } catch (error) {
+      console.error("Invalid delivery-agent session data:", error);
+    }
+    setAgent(savedAgent);
+    if (savedAgent?.id) {
+      setStatus(savedAgent.status || "Active");
+      loadAssignedOrders(savedAgent.id);
+    } else {
+      setOrders([]);
+      setOrdersError("Delivery agent session nahi mila. Please dobara login karo.");
+      setOrdersLoading(false);
+    }
+  }, [loadAssignedOrders]);
+
+  const handleLogout = async () => {
+    try {
+      if (agent?.id) {
+        await fetch(`${API_BASE_URL}/delivery-agent/logout`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ agent_id: Number(agent.id) }),
+        });
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      // Clear delivery agent session data
+      localStorage.removeItem("deliveryAgent");
+      sessionStorage.removeItem("deliveryAgent");
+
+      // Customer login page par redirect
+      navigate("/login", { replace: true });
+    }
+  };
   const filteredOrders = orders.filter((order) =>
     order.orderId.toLowerCase().includes(search.toLowerCase()) ||
     order.customerName.toLowerCase().includes(search.toLowerCase()) ||
     order.phoneNumber.includes(search)
   );
+
+  const todayKey = new Date().toDateString();
+  const todaysOrders = orders.filter((order) => {
+    if (order.orderedOn === "—") return false;
+    const parsed = new Date(order.orderedOn);
+    return !Number.isNaN(parsed.getTime()) && parsed.toDateString() === todayKey;
+  }).length;
+  const outForDeliveryCount = orders.filter((order) => order.status.toLowerCase() === "out for delivery").length;
+  const deliveredCount = orders.filter((order) => order.status.toLowerCase() === "delivered").length;
+  const cancelledCount = orders.filter((order) => order.status.toLowerCase() === "cancelled").length;
 
   const getStatusClass = (orderStatus) => {
     switch (orderStatus) {
@@ -82,7 +140,7 @@ const DeliveryAgentDashboard = () => {
           </div>
 
           <h1 className="dashboard-logo">
-            SCOOP AURA 
+            SCOOP AURA
           </h1>
 
         </div>
@@ -108,13 +166,12 @@ const DeliveryAgentDashboard = () => {
           <div className="status-container">
 
             <button
-              className={`status-button ${
-                status === "Active"
-                  ? "active-status"
-                  : status === "Offline"
+              className={`status-button ${status === "Active"
+                ? "active-status"
+                : status === "Offline"
                   ? "offline-status"
                   : "inactive-status"
-              }`}
+                }`}
               onClick={() =>
                 setShowStatusMenu(!showStatusMenu)
               }
@@ -181,13 +238,6 @@ const DeliveryAgentDashboard = () => {
               }
             >
 
-              <div className="profile-icon">
-                <i className="ri-user-line"></i>
-              </div>
-
-              <span className="profile-name">
-                Delivery Agent
-              </span>
 
               <i className="ri-arrow-down-s-line"></i>
 
@@ -205,14 +255,14 @@ const DeliveryAgentDashboard = () => {
 
                 <div className="menu-divider"></div>
 
-                <a
-                  href="/DeliveryAgent/AgentLogin"
+                <button
+                  type="button"
                   className="logout-link"
+                  onClick={handleLogout}
                 >
                   <i className="ri-logout-box-line"></i>
                   <span>Logout</span>
-                </a>
-
+                </button>
               </div>
 
             )}
@@ -280,7 +330,7 @@ const DeliveryAgentDashboard = () => {
 
                 <p>Today's Orders</p>
 
-                <h3>12</h3>
+                <h3>{todaysOrders}</h3>
 
               </div>
 
@@ -297,7 +347,7 @@ const DeliveryAgentDashboard = () => {
 
                 <p>Out For Delivery</p>
 
-                <h3>5</h3>
+                <h3>{outForDeliveryCount}</h3>
 
               </div>
 
@@ -314,7 +364,7 @@ const DeliveryAgentDashboard = () => {
 
                 <p>Delivered</p>
 
-                <h3>6</h3>
+                <h3>{deliveredCount}</h3>
 
               </div>
 
@@ -331,7 +381,7 @@ const DeliveryAgentDashboard = () => {
 
                 <p>Cancelled</p>
 
-                <h3>1</h3>
+                <h3>{cancelledCount}</h3>
 
               </div>
 
@@ -384,7 +434,10 @@ const DeliveryAgentDashboard = () => {
 
                 <tbody>
 
-                  {filteredOrders.map((order) => (
+                  {ordersLoading && <tr><td colSpan={8}>Loading your assigned orders...</td></tr>}
+                  {!ordersLoading && ordersError && <tr><td colSpan={8}>{ordersError} <button type="button" onClick={() => loadAssignedOrders(agent?.id)}>Retry</button></td></tr>}
+                  {!ordersLoading && !ordersError && filteredOrders.length === 0 && <tr><td colSpan={8}>No orders have been assigned to you yet.</td></tr>}
+                  {!ordersLoading && !ordersError && filteredOrders.map((order) => (
 
                     <tr key={order.orderId}>
 
@@ -419,6 +472,9 @@ const DeliveryAgentDashboard = () => {
 
                             <p className="customer-phone">
                               {order.phoneNumber}
+                            </p>
+                            <p className="customer-phone">
+                              {order.itemName} · Qty {order.quantity}
                             </p>
 
                           </div>

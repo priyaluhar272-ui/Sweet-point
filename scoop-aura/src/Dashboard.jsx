@@ -1,4 +1,6 @@
 
+
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Dashboard.css";
@@ -14,6 +16,9 @@ export default function Dashboard() {
   const [bookingTime, setBookingTime] = useState("18:00");
   const [guests, setGuests] = useState(2);
   const [message, setMessage] = useState("");
+  const [products, setProducts] = useState([]);
+  const [productsLoading, setProductsLoading] = useState(true);
+  const [productsError, setProductsError] = useState("");
 
   useEffect(() => {
     // Login ke samay saved user information
@@ -37,11 +42,68 @@ export default function Dashboard() {
         setCart([]);
       }
     }
+
+    // Admin Manage Items ma add karela items backend mathi load karo.
+    const loadProducts = async () => {
+      setProductsLoading(true);
+      setProductsError("");
+
+      try {
+        const response = await fetch("http://127.0.0.1:8000/items/");
+        if (!response.ok) {
+          throw new Error(`Items load nahi hue (HTTP ${response.status}).`);
+        }
+
+        const data = await response.json();
+        if (!Array.isArray(data)) {
+          throw new Error("Items API ka response list format mein nahi hai.");
+        }
+
+        setProducts(data.filter((item) => item.is_available !== false));
+      } catch (error) {
+        console.error("Dashboard items fetch error:", error);
+        setProductsError(
+          error.message || "Items load nahi hue. Backend/API check karo."
+        );
+      } finally {
+        setProductsLoading(false);
+      }
+    };
+
+    loadProducts();
   }, []);
 
   const saveCart = (updatedCart) => {
     setCart(updatedCart);
     localStorage.setItem("scoopAuraCart", JSON.stringify(updatedCart));
+  };
+
+  const addProductToCart = (product) => {
+    const productId = product.id;
+    const cartProduct = {
+      id: productId,
+      name: product.item_name || product.name || "Ice Cream",
+      flavor: product.flavour_name || product.flavor_name || "Ice Cream",
+      price: Number(product.price || 0),
+      quantity: 1,
+      image: product.image || product.image_url || "",
+    };
+
+    const existingProduct = cart.find(
+      (item) => String(item.id) === String(productId)
+    );
+
+    const updatedCart = existingProduct
+      ? cart.map((item) =>
+          String(item.id) === String(productId)
+            ? { ...item, quantity: Number(item.quantity || 1) + 1 }
+            : item
+        )
+      : [...cart, cartProduct];
+
+    saveCart(updatedCart);
+    setMessage(`${cartProduct.name} added to your cart!`);
+    window.setTimeout(() => setMessage(""), 3000);
   };
 
   const updateQuantity = (id, change) => {
@@ -210,6 +272,73 @@ export default function Dashboard() {
           <div className="banner-emoji">🍨🍓</div>
         </section>
 
+        <section className="dashboard-card available-products">
+          <div className="section-heading">
+            <div>
+              <h2>🍨 Available Ice Creams</h2>
+              <p>Fresh picks from the Scoop Aura menu</p>
+            </div>
+            <button className="text-button" onClick={() => navigate("/flavormenu")}>
+              Explore Flavours →
+            </button>
+          </div>
+
+          {message && <p className="product-feedback" role="status">{message}</p>}
+
+          {productsLoading ? (
+            <p className="products-state">Loading ice creams...</p>
+          ) : productsError ? (
+            <div className="products-state products-error">
+              <p>{productsError}</p>
+              <button
+                className="outline-button"
+                onClick={() => window.location.reload()}
+              >
+                Try Again
+              </button>
+            </div>
+          ) : products.length === 0 ? (
+            <p className="products-state">
+              Abhi koi available item nahi hai. Admin panel se item add karke available mark karein.
+            </p>
+          ) : (
+            <div className="available-products-grid">
+              {products.map((product) => (
+                <article className="available-product-card" key={product.id}>
+                  <div className="available-product-image">
+                    {product.image || product.image_url ? (
+                      <img
+                        src={product.image || product.image_url}
+                        alt={product.item_name || product.name || "Ice cream"}
+                      />
+                    ) : (
+                      <span aria-hidden="true">🍨</span>
+                    )}
+                  </div>
+                  <div className="available-product-details">
+                    <h3>{product.item_name || product.name || "Ice Cream"}</h3>
+                    <p>{product.description || "A delicious Scoop Aura treat."}</p>
+                    {(product.flavour_name || product.flavor_name) && (
+                      <span className="available-product-flavour">
+                        {product.flavour_name || product.flavor_name}
+                      </span>
+                    )}
+                    <div className="available-product-bottom">
+                      <strong>₹{Number(product.price || 0).toFixed(2)}</strong>
+                      <button
+                        className="primary-button"
+                        onClick={() => addProductToCart(product)}
+                      >
+                        + Add to Cart
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
+
         <div className="dashboard-grid">
           <section className="dashboard-card cart-card" id="cart-section">
             <div className="section-heading">
@@ -325,9 +454,16 @@ export default function Dashboard() {
                     onClick={() => {
                       if (cart.length === 0) {
                         setMessage("Your cart is empty.");
-                      } else {
-                        navigate("/checkout");
+                        return;
                       }
+
+                      setTimeout(() => {
+                        navigate("/Payment", {
+                          state: {
+                            cart: cart,
+                          },
+                        });
+                      }, 1000);
                     }}
                   >
                     Buy Now →
@@ -362,9 +498,8 @@ export default function Dashboard() {
                         setSelectedTable(table);
                         setMessage("");
                       }}
-                      className={`table-option ${booked ? "booked" : ""} ${
-                        selected ? "selected" : ""
-                      }`}
+                      className={`table-option ${booked ? "booked" : ""} ${selected ? "selected" : ""
+                        }`}
                     >
                       <span>🪑</span>
                       <strong>Table {table}</strong>

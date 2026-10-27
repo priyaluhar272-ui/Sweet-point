@@ -22,12 +22,12 @@
 
   padding: 45px;
 
-  background: rgba(255,255,255,0.92);
+  background: rgba(255, 255, 255, 0.92);
 
   border-radius: 30px;
 
   box-shadow:
-    0 25px 60px rgba(0,0,0,0.12);
+    0 25px 60px rgba(0, 0, 0, 0.12);
 
   text-align: center;
 
@@ -103,7 +103,7 @@
   border-color: #e84d8a;
 
   box-shadow:
-    0 0 0 4px rgba(232,77,138,0.1);
+    0 0 0 4px rgba(232, 77, 138, 0.1);
 }
 
 .forgot-password {
@@ -130,6 +130,7 @@
 .forgot-password button:hover {
   text-decoration: underline;
 }
+
 /* ERROR */
 
 .error-message {
@@ -177,7 +178,7 @@
   transform: translateY(-3px);
 
   box-shadow:
-    0 10px 25px rgba(232,77,138,0.3);
+    0 10px 25px rgba(232, 77, 138, 0.3);
 }
 
 
@@ -219,6 +220,23 @@
   cursor: pointer;
 }
 
+.delivery-agent-link {
+  display: block;
+  margin: 12px auto 0;
+  background: none;
+  border: none;
+  color: #e84d8a;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.delivery-agent-link:hover {
+  color: #c72e6b;
+  text-decoration: underline;
+  transform: translateY(-2px);
+}
 
 /* DECORATIONS */
 
@@ -262,7 +280,8 @@
 
 @keyframes shake {
 
-  0%,100% {
+  0%,
+  100% {
     transform: translateX(0);
   }
 
@@ -282,7 +301,8 @@
 
 @keyframes iconFloat {
 
-  0%,100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
 
@@ -308,7 +328,8 @@
 
 @keyframes decorationFloat {
 
-  0%,100% {
+  0%,
+  100% {
     transform: translateY(0) rotate(0);
   }
 

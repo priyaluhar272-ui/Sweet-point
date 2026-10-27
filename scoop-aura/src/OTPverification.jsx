@@ -8,16 +8,23 @@ function OTPverification() {
   const [message, setMessage] = useState("");
   const [timeLeft, setTimeLeft] = useState(60);
   const [resendEnabled, setResendEnabled] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
 
   const inputRefs = useRef([]);
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Forgot Password page se email receive karne ke liye
-  const email = location.state?.email || "your email";
+  // =====================================================
+  // GET EMAIL FROM FORGOT PASSWORD PAGE
+  // =====================================================
 
-  // Timer
+  const email = location.state?.email || "";
+
+  // =====================================================
+  // TIMER
+  // =====================================================
+
   useEffect(() => {
     if (timeLeft <= 0) {
       setResendEnabled(true);
@@ -31,32 +38,47 @@ function OTPverification() {
     return () => clearInterval(timer);
   }, [timeLeft]);
 
-  // OTP input change
+  // =====================================================
+  // OTP INPUT CHANGE
+  // =====================================================
+
   const handleChange = (value, index) => {
-    // Sirf number allow
+    // Only allow numbers
     if (!/^\d?$/.test(value)) {
       return;
     }
 
     const newOtp = [...otp];
+
     newOtp[index] = value;
+
     setOtp(newOtp);
     setMessage("");
 
-    // Automatically next box par jaana
+    // Move to next input
     if (value && index < 3) {
       inputRefs.current[index + 1]?.focus();
     }
   };
 
-  // Backspace handling
+  // =====================================================
+  // BACKSPACE HANDLING
+  // =====================================================
+
   const handleKeyDown = (e, index) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
+    if (
+      e.key === "Backspace" &&
+      !otp[index] &&
+      index > 0
+    ) {
       inputRefs.current[index - 1]?.focus();
     }
   };
 
-  // OTP paste handling
+  // =====================================================
+  // OTP PASTE
+  // =====================================================
+
   const handlePaste = (e) => {
     e.preventDefault();
 
@@ -65,7 +87,9 @@ function OTPverification() {
       .replace(/\D/g, "")
       .slice(0, 4);
 
-    if (!pastedData) return;
+    if (!pastedData) {
+      return;
+    }
 
     const newOtp = ["", "", "", ""];
 
@@ -74,160 +98,281 @@ function OTPverification() {
     });
 
     setOtp(newOtp);
+    setMessage("");
 
+    // Focus last entered box / next box
     const nextIndex = Math.min(pastedData.length, 3);
+
     inputRefs.current[nextIndex]?.focus();
   };
 
-  // Verify OTP
-  const handleVerify = async () => {
-    const enteredOTP = otp.join("");
+  // =====================================================
+  // VERIFY OTP
+  // =====================================================
 
-    if (enteredOTP.length !== 4) {
-      setMessage("Please enter the complete 4-digit OTP.");
-      return;
-    }
+const handleVerify = async () => {
 
-    try {
-      const response = await fetch("http://127.0.0.1:8000/verify-otp", {
+  const enteredOTP = otp.join("");
+
+  if (enteredOTP.length !== 4) {
+    setMessage("Please enter the complete 4-digit OTP.");
+    return;
+  }
+
+  try {
+
+    const response = await fetch(
+      "http://127.0.0.1:8000/verify-otp",
+      {
         method: "POST",
+
         headers: {
           "Content-Type": "application/json",
         },
+
         body: JSON.stringify({
           email: email,
           otp: enteredOTP,
         }),
+      }
+    );
+
+    const data = await response.json();
+
+    console.log("Verify OTP response:", data);
+
+    if (data.success === true) {
+
+      // OTP correct
+      navigate("/ResetPassword", {
+        state: {
+          email: email,
+        },
       });
 
-      const data = await response.json();
+    } else {
 
-      if (response.ok) {
-        // OTP correct -> Reset Password page
-        navigate("/reset-password", {
-          state: {
-            email: email,
-          },
-        });
-      } else {
-        setMessage(data.detail || "Invalid OTP.");
-      }
-    } catch (error) {
-      console.error("OTP verification error:", error);
-      setMessage("Unable to connect to server.");
+      // OTP incorrect
+      setMessage(data.message || "Invalid OTP.");
+
     }
-  };
 
-  // Resend OTP
+  } catch (error) {
+
+    console.error("OTP verification error:", error);
+
+    setMessage(
+      "Unable to connect to server."
+    );
+  }
+};
+
+  // =====================================================
+  // RESEND OTP
+  // =====================================================
+
   const handleResend = async () => {
-    if (!resendEnabled) return;
+    if (!resendEnabled) {
+      return;
+    }
+
+    if (!email) {
+      setMessage(
+        "Email information is missing. Please go back and enter your email again."
+      );
+      return;
+    }
+
+    setMessage("");
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/forgot-password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: email,
-        }),
-      });
+      const response = await fetch(
+        "http://127.0.0.1:8000/forgot-password",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          body: JSON.stringify({
+            email: email,
+          }),
+        }
+      );
 
       const data = await response.json();
 
-      if (response.ok) {
-        setOtp(["", "", "", ""]);
-        setMessage("OTP has been resent to your email.");
+      console.log("Resend OTP Response:", data);
 
+      if (data.success === true) {
+        // Clear old OTP
+        setOtp(["", "", "", ""]);
+
+        // Success message
+        setMessage(
+          "OTP has been resent to your email."
+        );
+
+        // Restart timer
         setTimeLeft(60);
         setResendEnabled(false);
 
+        // Focus first OTP box
         inputRefs.current[0]?.focus();
       } else {
-        setMessage(data.detail || "Failed to resend OTP.");
+        setMessage(
+          data.message || "Failed to resend OTP."
+        );
       }
     } catch (error) {
-      console.error("Resend OTP error:", error);
-      setMessage("Unable to connect to server.");
+      console.error(
+        "Resend OTP error:",
+        error
+      );
+
+      setMessage(
+        "Unable to connect to server."
+      );
     }
   };
 
+  // =====================================================
+  // CHANGE EMAIL
+  // =====================================================
+
+  const handleChangeEmail = () => {
+    navigate("/forgot-password");
+  };
+
+  // =====================================================
+  // UI
+  // =====================================================
+
   return (
     <div className="otp-page">
+
       <div className="otp-card">
 
         {/* TITLE */}
+
         <div className="otp-title-section">
+
           <h1>Enter OTP</h1>
 
           <p>
             Please enter the 4-digit code sent to{" "}
-            <strong>{email}</strong>
+
+            <strong>
+              {email || "your email"}
+            </strong>
 
             <button
               type="button"
               className="change-email"
-              onClick={() => navigate("/forgot-password")}
+              onClick={handleChangeEmail}
             >
               Change
             </button>
           </p>
+
         </div>
 
+
         {/* MESSAGE */}
+
         {message && (
           <div className="otp-message">
             {message}
           </div>
         )}
 
-        {/* 4 DIGIT OTP */}
+
+        {/* 4 DIGIT OTP INPUT */}
+
         <div className="otp-input-container">
 
           {[0, 1, 2, 3].map((index) => (
+
             <input
               key={index}
+
               ref={(element) => {
                 inputRefs.current[index] = element;
               }}
+
               className="otp-input"
+
               type="text"
+
               inputMode="numeric"
-              maxLength="1"
+
+              maxLength={1}
+
               value={otp[index]}
+
               onChange={(e) =>
-                handleChange(e.target.value, index)
+                handleChange(
+                  e.target.value,
+                  index
+                )
               }
+
               onKeyDown={(e) =>
-                handleKeyDown(e, index)
+                handleKeyDown(
+                  e,
+                  index
+                )
               }
+
               onPaste={handlePaste}
+
+              autoComplete="one-time-code"
             />
+
           ))}
 
         </div>
 
+
         {/* VERIFY BUTTON */}
+
         <button
           type="button"
+
           className="verify-otp-button"
-          disabled={otp.join("").length !== 4}
+
+          disabled={
+            otp.join("").length !== 4 ||
+            isVerifying
+          }
+
           onClick={handleVerify}
         >
-          Verify
+
+          {isVerifying
+            ? "Verifying..."
+            : "Verify"}
+
         </button>
 
-        {/* RESEND */}
+
+        {/* RESEND OTP */}
+
         <div className="resend-section">
 
           <button
             type="button"
+
             className="resend-button"
+
             disabled={!resendEnabled}
+
             onClick={handleResend}
           >
             Resend OTP
           </button>
+
 
           {!resendEnabled && (
             <span className="timer">
@@ -238,6 +383,7 @@ function OTPverification() {
         </div>
 
       </div>
+
     </div>
   );
 }

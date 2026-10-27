@@ -1,80 +1,228 @@
+
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./ResetPassword.css";
 
 function ResetPassword() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // OTP verification page se email receive hoga
+  const email = location.state?.email || "";
+
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const [passwordError, setPasswordError] = useState("");
-  const [confirmError, setConfirmError] = useState("");
+  const [message, setMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  const handlePasswordChange = (e) => {
-    const value = e.target.value;
-    setPassword(value);
+  // =====================================================
+  // RESET PASSWORD
+  // =====================================================
 
-    if (value.length < 8) {
-      setPasswordError("Password must be at least 8 characters");
-    } else {
-      setPasswordError("");
-    }
-
-    if (confirmPassword && value !== confirmPassword) {
-      setConfirmError("Passwords do not match");
-    } else {
-      setConfirmError("");
-    }
-  };
-
-  const handleConfirmPasswordChange = (e) => {
-    const value = e.target.value;
-    setConfirmPassword(value);
-
-    if (value !== password) {
-      setConfirmError("Passwords do not match");
-    } else {
-      setConfirmError("");
-    }
-  };
-
-  const handleSubmit = (e) => {
+  const handleResetPassword = async (e) => {
     e.preventDefault();
 
-    if (password.length < 8) {
-      setPasswordError("Password must be at least 8 characters");
+    // Clear previous messages
+    setMessage("");
+    setSuccessMessage("");
+
+    // ---------------------------------------------------
+    // EMAIL CHECK
+    // ---------------------------------------------------
+
+    if (!email) {
+      setMessage(
+        "Email information is missing. Please verify OTP again."
+      );
       return;
     }
+
+    // ---------------------------------------------------
+    // PASSWORD CHECK
+    // ---------------------------------------------------
+
+    if (!password) {
+      setMessage("Please enter new password.");
+      return;
+    }
+
+    // ---------------------------------------------------
+    // PASSWORD LENGTH
+    // ---------------------------------------------------
+
+    if (password.length < 8) {
+      setMessage(
+        "Password must be at least 8 characters."
+      );
+      return;
+    }
+
+    // ---------------------------------------------------
+    // CONFIRM PASSWORD
+    // ---------------------------------------------------
+
+    if (!confirmPassword) {
+      setMessage("Please confirm your password.");
+      return;
+    }
+
+    // ---------------------------------------------------
+    // PASSWORD MATCH
+    // ---------------------------------------------------
 
     if (password !== confirmPassword) {
-      setConfirmError("Passwords do not match");
+      setMessage("Passwords do not match.");
       return;
     }
 
-    console.log("Password reset successful");
+    // ---------------------------------------------------
+    // CALL BACKEND
+    // ---------------------------------------------------
 
-    // Backend connect karne ke baad yaha API call aayegi
+    try {
+      setLoading(true);
+
+      const response = await fetch(
+        "http://127.0.0.1:8000/reset-password",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          body: JSON.stringify({
+            email: email,
+            new_password: password,
+            confirm_password: confirmPassword,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      console.log(
+        "Reset password response:",
+        data
+      );
+
+      // -------------------------------------------------
+      // SUCCESS
+      // -------------------------------------------------
+
+      if (data.success === true) {
+        setPassword("");
+        setConfirmPassword("");
+
+        setMessage("");
+
+        setSuccessMessage(
+          "Password reset successfully! You can now login with your new password."
+        );
+
+      } else {
+        // ------------------------------------------------
+        // BACKEND ERROR
+        // ------------------------------------------------
+
+        setSuccessMessage("");
+
+        setMessage(
+          data.message ||
+            "Failed to reset password."
+        );
+      }
+
+    } catch (error) {
+
+      console.error(
+        "Reset password error:",
+        error
+      );
+
+      setSuccessMessage("");
+
+      setMessage(
+        "Unable to connect to server."
+      );
+
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="reset-page">
+
       <div className="reset-container">
 
         <div className="reset-card">
 
-          {/* TITLE */}
+          {/* =========================================
+              TITLE
+          ========================================== */}
+
           <div className="reset-title-section">
-            <h1>Reset Password</h1>
-            <p>Please enter your new password</p>
+
+            <h1>
+              Reset Password
+            </h1>
+
+            <p>
+              Please enter your new password
+            </p>
+
           </div>
 
-          <form onSubmit={handleSubmit}>
 
-            {/* NEW PASSWORD */}
+          {/* =========================================
+              SUCCESS MESSAGE
+          ========================================== */}
+
+          {successMessage && (
+            <div className="reset-success-message">
+
+              <div className="success-check">
+                ✓
+              </div>
+
+              <div>
+                {successMessage}
+              </div>
+
+            </div>
+          )}
+
+
+          {/* =========================================
+              ERROR MESSAGE
+          ========================================== */}
+
+          {message && (
+            <div className="reset-error-message">
+
+              {message}
+
+            </div>
+          )}
+
+
+          {/* =========================================
+              FORM
+          ========================================== */}
+
+          <form onSubmit={handleResetPassword}>
+
+            {/* =====================================
+                NEW PASSWORD
+            ====================================== */}
+
             <div className="reset-input-group">
 
               <label htmlFor="password">
@@ -85,19 +233,35 @@ function ResetPassword() {
 
                 <input
                   id="password"
-                  type={showPassword ? "text" : "password"}
+                  type={
+                    showPassword
+                      ? "text"
+                      : "password"
+                  }
                   placeholder="New Password"
                   value={password}
-                  onChange={handlePasswordChange}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setMessage("");
+                  }}
+                  autoComplete="new-password"
                 />
 
                 <button
                   type="button"
                   className="password-toggle"
                   onClick={() =>
-                    setShowPassword(!showPassword)
+                    setShowPassword(
+                      !showPassword
+                    )
+                  }
+                  aria-label={
+                    showPassword
+                      ? "Hide password"
+                      : "Show password"
                   }
                 >
+
                   <i
                     className={
                       showPassword
@@ -105,20 +269,28 @@ function ResetPassword() {
                         : "ri-eye-line"
                     }
                   ></i>
+
                 </button>
 
               </div>
 
-              {passwordError && (
-                <p className="password-error">
-                  {passwordError}
-                </p>
-              )}
+
+              {/* Password validation */}
+
+              {password.length > 0 &&
+                password.length < 8 && (
+                  <p className="password-error">
+                    Password must be at least 8 characters
+                  </p>
+                )}
 
             </div>
 
 
-            {/* CONFIRM PASSWORD */}
+            {/* =====================================
+                CONFIRM PASSWORD
+            ====================================== */}
+
             <div className="reset-input-group">
 
               <label htmlFor="confirmPassword">
@@ -136,7 +308,13 @@ function ResetPassword() {
                   }
                   placeholder="Confirm Password"
                   value={confirmPassword}
-                  onChange={handleConfirmPasswordChange}
+                  onChange={(e) => {
+                    setConfirmPassword(
+                      e.target.value
+                    );
+                    setMessage("");
+                  }}
+                  autoComplete="new-password"
                 />
 
                 <button
@@ -147,7 +325,13 @@ function ResetPassword() {
                       !showConfirmPassword
                     )
                   }
+                  aria-label={
+                    showConfirmPassword
+                      ? "Hide password"
+                      : "Show password"
+                  }
                 >
+
                   <i
                     className={
                       showConfirmPassword
@@ -155,43 +339,64 @@ function ResetPassword() {
                         : "ri-eye-line"
                     }
                   ></i>
+
                 </button>
 
               </div>
 
-              {confirmError && (
-                <p className="confirm-error">
-                  {confirmError}
-                </p>
-              )}
+
+              {/* Confirm password validation */}
+
+              {confirmPassword.length > 0 &&
+                password !== confirmPassword && (
+                  <p className="password-error">
+                    Passwords do not match
+                  </p>
+                )}
 
             </div>
 
 
-            {/* RESET BUTTON */}
+            {/* =====================================
+                RESET BUTTON
+            ====================================== */}
+
             <button
               type="submit"
               className="reset-button"
+              disabled={loading}
             >
-              Reset Password
+
+              {loading
+                ? "Resetting..."
+                : "Reset Password"}
+
             </button>
 
           </form>
 
 
-          {/* BACK TO LOGIN */}
+          {/* =========================================
+              BACK TO LOGIN
+          ========================================== */}
+
           <div className="back-login">
+
             <button
               type="button"
-              onClick={() => navigate("/login")}
+              onClick={() =>
+                navigate("/login")
+              }
             >
               Back to Login
             </button>
+
           </div>
 
         </div>
 
       </div>
+
     </div>
   );
 }

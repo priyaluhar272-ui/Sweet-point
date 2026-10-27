@@ -1,341 +1,308 @@
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./FlavorItems.css";
 
-// Load all images from src/falvoricecream
-const imageModules = import.meta.glob("./falvoricecream/*", {
-  eager: true,
-  query: "?url",
-  import: "default",
-});
+const API_BASE_URL = "http://127.0.0.1:8000";
 
-const normalize = (value) =>
-  value.toLowerCase().replace(/[^a-z0-9]/g, "");
+const normalize = (value = "") =>
+  String(value).toLowerCase().replace(/[^a-z0-9]/g, "");
 
-const files = Object.entries(imageModules).map(([path, image]) => {
-  const filename = path.split("/").pop();
-  const extension = filename.includes(".")
-    ? filename.substring(filename.lastIndexOf("."))
-    : "";
+// Convert database image path into a usable image URL
+const getImageUrl = (product) => {
+  const imagePath = product.image_url || product.image || "";
 
-  const rawName = extension
-    ? filename.substring(0, filename.lastIndexOf("."))
-    : filename;
-
-  return {
-    id: path,
-    image,
-    filename: rawName,
-    normalized: normalize(rawName),
-  };
-});
-
-const flavors = [
-  {
-    name: "Chocolate",
-    aliases: ["chocolate", "choclate", "chocate"],
-    price: 120,
-    emoji: "🍫",
-  },
-  {
-    name: "Strawberry",
-    aliases: ["strawberry", "strawbery"],
-    price: 110,
-    emoji: "🍓",
-  },
-  {
-    name: "Butterscotch",
-    aliases: ["butterscotch"],
-    price: 115,
-    emoji: "🍮",
-  },
-  {
-    name: "Mango",
-    aliases: ["mango"],
-    price: 115,
-    emoji: "🥭",
-  },
-  {
-    name: "Brownie Fudge",
-    aliases: ["browniefudge", "rowniefudge"],
-    price: 150,
-    emoji: "🍫",
-  },
-  {
-    name: "Black Currant",
-    aliases: ["blackcurrant"],
-    price: 125,
-    emoji: "🫐",
-  },
-  {
-    name: "Kesar Pista",
-    aliases: ["kesarpista"],
-    price: 140,
-    emoji: "💚",
-  },
-  {
-    name: "Rajbhog",
-    aliases: ["rajbhog"],
-    price: 135,
-    emoji: "👑",
-  },
-  {
-    name: "Cookies & Cream",
-    aliases: ["cookiescream"],
-    price: 130,
-    emoji: "🍪",
-  },
-  {
-    name: "Choco Chip",
-    aliases: ["chocochip"],
-    price: 125,
-    emoji: "🍫",
-  },
-  {
-    name: "Mint Chocolate",
-    aliases: ["mintchocolate"],
-    price: 125,
-    emoji: "🌿",
-  },
-  {
-    name: "Blueberry",
-    aliases: ["blueberry"],
-    price: 130,
-    emoji: "🫐",
-  },
-  {
-    name: "Coffee",
-    aliases: ["coffee"],
-    price: 120,
-    emoji: "☕",
-  },
-  {
-    name: "Caramel",
-    aliases: ["caramel"],
-    price: 125,
-    emoji: "🍯",
-  },
-  {
-    name: "Vanilla",
-    aliases: ["vanilla", "vanila"],
-    price: 90,
-    emoji: "🍨",
-  },
-];
-
-// Match each filename to the most specific flavor.
-// For example, Mint Chocolate images won't appear under Chocolate.
-const getMatchedFlavor = (file) => {
-  const matches = flavors.flatMap((flavor) =>
-    flavor.aliases
-      .filter((alias) => file.normalized.includes(normalize(alias)))
-      .map((alias) => ({
-        flavor,
-        length: normalize(alias).length,
-      }))
-  );
-
-  matches.sort((a, b) => b.length - a.length);
-  return matches[0]?.flavor ?? null;
-};
-
-const getProductName = (filename, flavor, index) => {
-  const cleanName = filename
-    .replace(/[-_]+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-
-  // Use the image filename as the product name.
-  // If the filename is just a flavor name, add a number.
-  if (normalize(cleanName) === normalize(flavor.name)) {
-    return `${flavor.name} Special ${index + 1}`;
+  if (!imagePath || typeof imagePath !== "string") {
+    return "";
   }
 
-  return cleanName.replace(/\b\w/g, (letter) => letter.toUpperCase());
+  const path = imagePath.trim();
+
+  if (!path) return "";
+
+  // Image URL is already absolute
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return path;
+  }
+
+  // Relative image path served by Vite
+  return `http://localhost:5173${
+    path.startsWith("/") ? "" : "/"
+  }${path}`;
 };
 
 function FlavorItems() {
   const location = useLocation();
   const navigate = useNavigate();
-  const selectedFlavorName = location.state?.flavor;
 
-  const [addedIds, setAddedIds] = useState([]);
+  const selectedFlavor = location.state?.flavor || "Butterscotch";
 
-  const selectedFlavor = flavors.find(
-    (flavor) =>
-      normalize(flavor.name) === normalize(selectedFlavorName || "")
-  );
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
-  const products = useMemo(() => {
-    if (!selectedFlavor) return [];
+  useEffect(() => {
+    const controller = new AbortController();
 
-    return files
-      .filter((file) => getMatchedFlavor(file)?.name === selectedFlavor.name)
-      .sort((a, b) => a.filename.localeCompare(b.filename))
-      .map((file, index) => ({
-        ...file,
-        name: getProductName(file.filename, selectedFlavor, index),
-        price: selectedFlavor.price + index * 10,
-      }));
-  }, [selectedFlavor]);
+    async function loadItems() {
+      setLoading(true);
+      setError("");
 
-  const addToCart = (product, goToCart = false) => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/items/`, {
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            `Items API failed (${response.status}). Backend ke /items/ endpoint ko check karo.`
+          );
+        }
+
+        const data = await response.json();
+
+        if (!Array.isArray(data)) {
+          throw new Error("GET /items/ se JSON list return nahi hui.");
+        }
+
+        console.log("Items API response:", data);
+
+        const availableItems = data.filter((item) => {
+          if (
+            item.is_available === undefined ||
+            item.is_available === null
+          ) {
+            return true;
+          }
+
+          return (
+            item.is_available === true ||
+            item.is_available === 1 ||
+            String(item.is_available).toLowerCase() === "true"
+          );
+        });
+
+        setItems(availableItems);
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          console.error("Flavor items load error:", err);
+          setError(err.message || "Items load nahi ho paaye.");
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadItems();
+
+    return () => controller.abort();
+  }, []);
+
+  const flavorItems = useMemo(() => {
+    const wanted = normalize(selectedFlavor);
+
+    return items.filter((item) => {
+      const itemFlavor =
+        item.flavour_name ??
+        item.flavor_name ??
+        item.flavour ??
+        item.flavor ??
+        item.flavourName ??
+        item.flavorName ??
+        "";
+
+      return normalize(itemFlavor) === wanted;
+    });
+  }, [items, selectedFlavor]);
+
+  const addToCart = (product) => {
     const cartItem = {
       id: product.id,
-      name: product.name,
-      flavor: selectedFlavor.name,
-      image: product.image,
-      price: product.price,
+      name: product.item_name || product.name || "Ice Cream",
+      flavor:
+        product.flavour_name ||
+        product.flavor_name ||
+        product.flavour ||
+        product.flavor ||
+        selectedFlavor,
+      price: Number(product.price || 0),
       quantity: 1,
+      image: getImageUrl(product),
     };
 
     try {
-      const existingCart = JSON.parse(
+      const savedCart = JSON.parse(
         localStorage.getItem("scoopAuraCart") || "[]"
       );
 
-      const cart = Array.isArray(existingCart) ? existingCart : [];
-      const existingItem = cart.find((item) => item.id === cartItem.id);
+      const currentCart = Array.isArray(savedCart) ? savedCart : [];
 
-      let updatedCart;
+      const existing = currentCart.find(
+        (item) => String(item.id) === String(cartItem.id)
+      );
 
-      if (existingItem) {
-        updatedCart = cart.map((item) =>
-          item.id === cartItem.id
-            ? { ...item, quantity: (Number(item.quantity) || 0) + 1 }
-            : item
-        );
-      } else {
-        updatedCart = [...cart, cartItem];
-      }
+      const updatedCart = existing
+        ? currentCart.map((item) =>
+            String(item.id) === String(cartItem.id)
+              ? {
+                  ...item,
+                  quantity: Number(item.quantity || 1) + 1,
+                }
+              : item
+          )
+        : [...currentCart, cartItem];
 
-      localStorage.setItem("scoopAuraCart", JSON.stringify(updatedCart));
+      localStorage.setItem(
+        "scoopAuraCart",
+        JSON.stringify(updatedCart)
+      );
 
-      setAddedIds((previous) => [...previous, product.id]);
-
-      if (goToCart) {
-        navigate("/dashboard");
-      }
-    } catch (error) {
-      console.error("Unable to save cart:", error);
-      window.alert("Cart save nahi hua. Please try again.");
+      setMessage(`${cartItem.name} added to your cart.`);
+    } catch (err) {
+      console.error("Cart save error:", err);
+      setMessage("Cart update nahi hua. Browser storage check karo.");
     }
   };
 
-  if (!selectedFlavor) {
-    return (
-      <main className="items-page">
-        <div className="items-empty">
-          <h2>🍦 Please select a flavor</h2>
-          <p>Go back and choose your favorite ice cream flavor.</p>
-          <button onClick={() => navigate("/flavormenu")}>
-            ← Back to Flavors
-          </button>
-        </div>
-      </main>
-    );
-  }
-
   return (
-    <main className="items-page">
-      <header className="items-header">
+    <main className="flavor-items-page">
+      <header className="fi-topbar">
         <button
-          className="items-back"
+          className="fi-back-button"
           onClick={() => navigate("/flavormenu")}
         >
-          ← All Flavors
+          ← Back to Flavours
         </button>
 
-        <div className="items-logo">🍦 ScoopAura</div>
+        <div className="fi-brand">
+          🍦 <span>ScoopAura</span>
+        </div>
 
         <button
-          className="items-cart"
+          className="fi-cart-button"
           onClick={() => navigate("/dashboard")}
         >
           🛒 View Cart
         </button>
       </header>
 
-      <section className="items-hero">
-        <span className="items-kicker">MADE WITH LOVE ♥</span>
+      <section className="fi-heading">
+        <span className="fi-eyebrow">MADE WITH LOVE ♥</span>
         <h1>
-          {selectedFlavor.emoji} {selectedFlavor.name}{" "}
-          <span>Collection</span>
+          {selectedFlavor} <span>Collection</span>
         </h1>
         <p>
-          Discover every delicious {selectedFlavor.name.toLowerCase()} treat.
+          Explore the items available in our {selectedFlavor} flavour.
         </p>
-        <div className="items-count">
-          {products.length} {products.length === 1 ? "item" : "items"} found
-        </div>
       </section>
 
-      {products.length > 0 ? (
-        <section className="items-grid">
-          {products.map((product, index) => (
-            <article className="item-card" key={product.id}>
-              <div className="item-image-wrap">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="item-image"
-                  loading="lazy"
-                />
-                <span className="item-badge">Fresh & Delicious</span>
-              </div>
+      {message && (
+        <div className="fi-message" role="status">
+          {message}
+          <button
+            onClick={() => setMessage("")}
+            aria-label="Dismiss message"
+          >
+            ×
+          </button>
+        </div>
+      )}
 
-              <div className="item-details">
-                <span className="item-number">
-                  ITEM {String(index + 1).padStart(2, "0")}
-                </span>
-
-                <h2>{product.name}</h2>
-                <p className="item-description">
-                  Creamy, delicious {selectedFlavor.name.toLowerCase()} ice cream.
-                </p>
-
-                <div className="item-buy-row">
-                  <strong className="item-price">₹{product.price}</strong>
-                  <span className="item-unit">per item</span>
-                </div>
-
-                <button
-                  className="item-add-btn"
-                  onClick={() => addToCart(product)}
-                >
-                  {addedIds.includes(product.id)
-                    ? "✓ Added to Cart"
-                    : "🛒 Add to Cart"}
-                </button>
-
-                <button
-                  className="item-buy-btn"
-                  onClick={() => addToCart(product, true)}
-                >
-                  Buy Now →
-                </button>
-              </div>
-            </article>
-          ))}
-        </section>
-      ) : (
-        <section className="items-empty">
-          <div className="empty-emoji">{selectedFlavor.emoji}</div>
-          <h2>No matching images found</h2>
+      {loading ? (
+        <div className="fi-state">
+          <span className="fi-spinner" />
+          <p>Loading {selectedFlavor} items...</p>
+        </div>
+      ) : error ? (
+        <div className="fi-state fi-error">
+          <h2>Items load nahi ho paaye</h2>
+          <p>{error}</p>
+          <button onClick={() => window.location.reload()}>
+            Try Again
+          </button>
+        </div>
+      ) : flavorItems.length === 0 ? (
+        <div className="fi-state fi-empty">
+          <div>🍨</div>
+          <h2>No {selectedFlavor} items found</h2>
           <p>
-            Please check that your {selectedFlavor.name} images are inside
-            <code> src/falvoricecream </code> and their filenames contain the
-            flavor name.
+            Admin ke Manage Items page par item ka flavour{" "}
+            <strong>{selectedFlavor}</strong> select karke save karo,
+            aur item available hona chahiye.
           </p>
           <button onClick={() => navigate("/flavormenu")}>
-            ← Choose Another Flavor
+            Explore Other Flavours
           </button>
+        </div>
+      ) : (
+        <section
+          className="fi-product-grid"
+          aria-label={`${selectedFlavor} items`}
+        >
+          {flavorItems.map((product) => {
+            const imageUrl = getImageUrl(product);
+
+            return (
+              <article className="fi-product-card" key={product.id}>
+                <div className="fi-product-image">
+                  {imageUrl ? (
+                    <img
+                      src={imageUrl}
+                      alt={
+                        product.item_name ||
+                        product.name ||
+                        "Ice cream"
+                      }
+                      onError={(event) => {
+                        console.error(
+                          "Image load failed:",
+                          event.currentTarget.src,
+                          "Database image_url:",
+                          product.image_url
+                        );
+                        event.currentTarget.style.display = "none";
+                      }}
+                    />
+                  ) : (
+                    <span aria-hidden="true">🍨</span>
+                  )}
+
+                  <span className="fi-flavour-tag">
+                    {selectedFlavor}
+                  </span>
+                </div>
+
+                <div className="fi-product-content">
+                  <h2>
+                    {product.item_name || product.name || "Ice Cream"}
+                  </h2>
+
+                  <p>
+                    {product.description ||
+                      "A delicious ScoopAura treat."}
+                  </p>
+
+                  <div className="fi-product-bottom">
+                    <strong>
+                      ₹{Number(product.price || 0).toFixed(2)}
+                    </strong>
+
+                    <button onClick={() => addToCart(product)}>
+                      ＋ Add to Cart
+                    </button>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
         </section>
       )}
 
-      <footer className="items-footer">
-        🍦 Scoops of happiness, made just for you. ♥
+      <footer className="fi-footer">
+        ScoopAura · Freshly made with love ♥
       </footer>
     </main>
   );

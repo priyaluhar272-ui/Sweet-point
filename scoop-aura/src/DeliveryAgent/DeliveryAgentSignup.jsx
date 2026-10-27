@@ -1,7 +1,13 @@
+
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "./DeliveryAgentSignup.css";
 
+const API_URL = "http://127.0.0.1:8000";
+
 const DeliveryAgentSignup = () => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -16,6 +22,7 @@ const DeliveryAgentSignup = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -26,417 +33,297 @@ const DeliveryAgentSignup = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
+
+    const firstName = formData.firstName.trim();
+    const lastName = formData.lastName.trim();
+    const email = formData.email.trim().toLowerCase();
+    const phoneNumber = formData.phoneNumber.trim();
+
+    if (!firstName || !lastName || !phoneNumber) {
+      setMessage("Please fill in all required fields.");
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setMessage("Password must be at least 8 characters.");
+      return;
+    }
 
     if (formData.password !== formData.confirmPassword) {
       setMessage("Passwords do not match.");
       return;
     }
 
-    if (!formData.terms) {
-      setMessage(
-        "Please accept Terms of Service and Privacy Policy."
+    try {
+      const response = await fetch(
+        `${API_URL}/delivery-agent/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: `${firstName} ${lastName}`,
+            email,
+            contact_number: phoneNumber,
+            password: formData.password,
+          }),
+        }
       );
-      return;
-    }
 
-    console.log("Delivery Agent Data:", formData);
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          typeof data.detail === "string"
+            ? data.detail
+            : data.message || "Registration failed."
+        );
+      }
+
+      setMessage("Registration successful!");
+
+      navigate("/delivery-agent/login", {
+        replace: true,
+        state: {
+          message: data.message || "Registration successful. Please log in.",
+        },
+      });
+    } catch (error) {
+      setMessage(
+        error.message || "Unable to connect to the backend."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="signup-page">
-
       <div className="signup-container">
-
-        {/* Header */}
         <div className="signup-header">
-
-          <h1 className="brand-name">
-            Scoop Aura
-          </h1>
+          <h1 className="brand-name">Scoop Aura</h1>
           <div>
-            <br></br>
+            <br />
           </div>
-          <h2>
-            Delivery Agent Sign Up
-          </h2>
-
+          <h2>Delivery Agent Sign Up</h2>
           <div className="title-line"></div>
-
         </div>
 
-
-        {/* Signup Card */}
         <div className="signup-card">
-
           <form onSubmit={handleSubmit}>
-
-            {/* Message */}
             {message && (
-              <div className="message">
+              <div
+                className="message"
+                role="alert"
+                aria-live="polite"
+              >
                 {message}
               </div>
             )}
 
-
-            {/* First Name + Last Name */}
             <div className="two-column">
-
-              {/* First Name */}
               <div className="form-group">
-
                 <label>
-                  First Name
-                  <span className="required">*</span>
+                  First Name <span className="required">*</span>
                 </label>
-
                 <div className="input-wrapper">
-
                   <i className="ri-user-line"></i>
-
                   <input
                     type="text"
                     name="firstName"
                     placeholder="Enter first name"
                     value={formData.firstName}
                     onChange={handleChange}
+                    autoComplete="given-name"
                     required
                   />
-
                 </div>
-
               </div>
 
-
-              {/* Last Name */}
               <div className="form-group">
-
                 <label>
-                  Last Name
-                  <span className="required">*</span>
+                  Last Name <span className="required">*</span>
                 </label>
-
                 <div className="input-wrapper">
-
                   <i className="ri-user-line"></i>
-
                   <input
                     type="text"
                     name="lastName"
                     placeholder="Enter last name"
                     value={formData.lastName}
                     onChange={handleChange}
+                    autoComplete="family-name"
                     required
                   />
-
                 </div>
-
               </div>
-
             </div>
 
-
-            {/* Email */}
             <div className="form-group">
-
               <label>
-                Email Address
-                <span className="required">*</span>
+                Email Address <span className="required">*</span>
               </label>
-
               <div className="input-wrapper">
-
                 <i className="ri-mail-line"></i>
-
                 <input
                   type="email"
                   name="email"
                   placeholder="Enter your email"
                   value={formData.email}
                   onChange={handleChange}
+                  autoComplete="email"
                   required
                 />
-
               </div>
-
             </div>
 
-
-            {/* Password + Confirm Password */}
             <div className="two-column">
-
-              {/* Password */}
               <div className="form-group">
-
                 <label>
-                  Password
-                  <span className="required">*</span>
+                  Password <span className="required">*</span>
                 </label>
-
                 <div className="input-wrapper">
-
                   <i className="ri-lock-line"></i>
-
                   <input
-                    type={
-                      showPassword
-                        ? "text"
-                        : "password"
-                    }
+                    type={showPassword ? "text" : "password"}
                     name="password"
                     placeholder="Create password"
                     value={formData.password}
                     onChange={handleChange}
+                    autoComplete="new-password"
+                    minLength={8}
                     required
                   />
-
                   <i
                     className={
                       showPassword
                         ? "ri-eye-line password-eye"
                         : "ri-eye-off-line password-eye"
                     }
-                    onClick={() =>
-                      setShowPassword(!showPassword)
+                    role="button"
+                    tabIndex={0}
+                    aria-label={
+                      showPassword ? "Hide password" : "Show password"
                     }
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setShowPassword((prev) => !prev);
+                      }
+                    }}
                   ></i>
-
                 </div>
-
                 <p className="password-help">
-                  Must be at least 8 characters with letters and numbers
+                  Must be at least 8 characters
                 </p>
-
               </div>
 
-
-              {/* Confirm Password */}
               <div className="form-group">
-
                 <label>
-                  Confirm Password
-                  <span className="required">*</span>
+                  Confirm Password <span className="required">*</span>
                 </label>
-
                 <div className="input-wrapper">
-
                   <i className="ri-lock-line"></i>
-
                   <input
                     type="password"
                     name="confirmPassword"
                     placeholder="Confirm password"
                     value={formData.confirmPassword}
                     onChange={handleChange}
+                    autoComplete="new-password"
                     required
                   />
-
                 </div>
-
               </div>
-
             </div>
 
-
-            {/* Phone + Status */}
             <div className="two-column">
-
-              {/* Phone */}
               <div className="form-group">
-
                 <label>
-                  Phone Number
-                  <span className="required">*</span>
+                  Phone Number <span className="required">*</span>
                 </label>
-
                 <div className="input-wrapper">
-
                   <i className="ri-phone-line"></i>
-
                   <input
                     type="tel"
                     name="phoneNumber"
                     placeholder="Enter phone number"
                     value={formData.phoneNumber}
                     onChange={handleChange}
+                    autoComplete="tel"
                     required
                   />
-
                 </div>
-
               </div>
 
-
-              {/* Status */}
               <div className="form-group">
-
                 <label>
-                  Status
-                  <span className="required">*</span>
+                  Status <span className="required">*</span>
                 </label>
-
                 <div className="input-wrapper">
-
                   <i className="ri-user-settings-line"></i>
-
                   <select
                     name="status"
                     value={formData.status}
                     onChange={handleChange}
                     required
                   >
-                    <option value="">
-                      -- Select --
-                    </option>
-
-                    <option value="Active">
-                      Active
-                    </option>
-
-                    <option value="Inactive">
-                      Inactive
-                    </option>
-
+                    <option value="">-- Select --</option>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
                   </select>
-
                 </div>
-
               </div>
-
             </div>
 
-
-            {/* Working Area */}
             <div className="form-group">
-
               <label>
-                Address
-                <span className="required">*</span>
+                Address <span className="required">*</span>
               </label>
-
               <div className="input-wrapper">
-
                 <i className="ri-map-pin-line"></i>
-
                 <select
                   name="workingArea"
                   value={formData.workingArea}
                   onChange={handleChange}
                   required
                 >
-
-                  <option value="">
-                    -- Select area --
-                  </option>
-
-                  <option>
-                    Katargam, Surat
-                  </option>
-
-                  <option>
-                    Adajan, Surat
-                  </option>
-
-                  <option>
-                    Varachha, Surat
-                  </option>
-
-                  <option>
-                    Nana Varachha, Surat
-                  </option>
-
-                  <option>
-                    Mota Varachha, Surat
-                  </option>
-
-                  <option>
-                    Kamrej, Surat
-                  </option>
-
-                  <option>
-                    Vesu, Surat
-                  </option>
-
-                  <option>
-                    New Katargam, Surat
-                  </option>
-
+                  <option value="">-- Select area --</option>
+                  <option value="Katargam, Surat">Katargam, Surat</option>
+                  <option value="Adajan, Surat">Adajan, Surat</option>
+                  <option value="Varachha, Surat">Varachha, Surat</option>
                 </select>
-
               </div>
-
             </div>
 
-
-            {/* Terms */}
-            <div className="terms-section">
-
-              <label>
-
-                <input
-                  type="checkbox"
-                  name="terms"
-                  checked={formData.terms}
-                  onChange={handleChange}
-                  required
-                />
-
-                <span>
-                  I agree to the{" "}
-
-                  <a href="#">
-                    Terms of Service
-                  </a>
-
-                  {" "}and{" "}
-
-                  <a href="#">
-                    Privacy Policy
-                  </a>
-
-                </span>
-
-              </label>
-
-            </div>
-
-
-            {/* Create Account */}
             <button
               type="submit"
               className="create-account-button"
+              disabled={loading}
             >
-              Create Account
+              {loading ? "Creating Account..." : "Create Account"}
             </button>
 
-
-            {/* Login */}
             <div className="login-section">
-
               <p>
                 Already have an account?{" "}
-
-                <a href="/DeliveryAgent/DeliveryAgentLogin">
+                <Link to="/delivery-agent/login">
                   Login
-                </a>
+                </Link>
               </p>
-
             </div>
-
           </form>
-
         </div>
 
-
-        {/* Footer */}
         <div className="footer">
           © 2025 Delivero. All rights reserved.
         </div>
-
       </div>
-
     </div>
   );
 };
